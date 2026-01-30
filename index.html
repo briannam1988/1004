@@ -3,199 +3,207 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <!-- Google Site Verification -->
-    <meta name="google-site-verification" content="ORWCt-JA4PPTFcb_b7FWudnRN0X9DlUPw3aJlCoSsZU" />
-
-    <!-- 1. SEO 최적화 -->
-    <title>AI 문구 생성기 | 보고서, 사과 문자, 요청 메일 작성 도우미</title>
-    <meta name="description" content="AI가 상황, 톤, 추가 정보에 맞춰 보고서, 사과 문자, 요청 메일 등 모든 상황에 맞는 완벽한 문구를 실시간으로 생성해드립니다. 지금 바로 경험해보세요." />
-    <meta name="keywords" content="AI 문구 생성기, 문구 생성기, 보고서 문구, 사과 문자, 요청 메일, 업무 이메일 예시, 정중한 거절 표현, 비즈니스 한국어, AI 글쓰기" />
+    <title>AI 문구 생성기 V2.0 | 보고서, 이메일, 사과문 작성 도우미</title>
+    <meta name="description" content="AI가 상황, 대상, 톤, 길이에 맞춰 3가지 버전의 완벽한 문구를 실시간으로 제안해드립니다. 보고서, 이메일, 사과, 요청 등 모든 글쓰기의 어려움을 해결하세요." />
+    <meta name="keywords" content="AI 문구 생성기, AI 글쓰기, 이메일 자동 작성, 보고서 작성법, 비즈니스 이메일, 정중한 거절, 사과 문자, 글쓰기 도우미, 버전 2.0" />
     <link rel="canonical" href="https://ai-text-generator.pages.dev" />
-
-    <!-- 2. 소셜 미디어 공유 최적화 (Open Graph) -->
-    <meta property="og:title" content="AI 문구 생성기 | 모든 상황을 위한 완벽한 문장" />
-    <meta property="og:description" content="AI가 당신의 상황과 톤에 맞춰, 세상에 단 하나뿐인 문구를 만들어드립니다." />
+    <meta property="og:title" content="AI 문구 생성기 V2.0 | 3가지 제안으로 더 완벽하게" />
+    <meta property="og:description" content="상황, 대상, 톤, 길이에 맞춰 AI가 3가지 버전의 문구를 제안합니다. 이제 글쓰기 고민은 끝." />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://ai-text-generator.pages.dev" />
-    <meta property="og:image" content="https://ai-text-generator.pages.dev/og-image.png" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:site_name" content="AI 문구 생성기" />
-    <meta property="og:locale" content="ko_KR" />
-
-    <!-- 3. 구조화된 데이터 (JSON-LD) -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "AI 문구 생성기",
-      "applicationCategory": "Productivity",
-      "operatingSystem": "Web",
-      "description": "사용자의 상황, 톤, 추가 정보를 기반으로 AI가 맞춤형 문구를 실시간으로 생성해주는 웹 애플리케이션입니다.",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "KRW"
-      },
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.9",
-        "ratingCount": "152"
-      }
-    }
-    </script>
-    
-    <!-- Google Adsense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8164071407412804"
-     crossorigin="anonymous"></script>
-
-    <!-- External Stylesheet -->
+    <meta property="og:image" content="https://ai-text-generator.pages.dev/og-image-v2.png" />
     <link rel="stylesheet" href="style.css">
-
 </head>
 <body>
 
 <div class="container">
-    <h1>AI 상황별 문구 생성기 ✨</h1>
+    <div class="header">
+        <h1>AI 문구 생성기 ✨ <span class="version-badge">V2.0</span></h1>
+        <p class="subtitle">상황, 대상, 톤, 길이에 맞춰 AI가 3가지 버전의 문구를 제안합니다.</p>
+    </div>
 
-    <label for="situation">어떤 상황인가요?</label>
-    <select id="situation">
-        <option value="apology">사과</option>
-        <option value="request">요청</option>
-        <option value="report">보고</option>
-        <option value="rejection">거절</option>
-    </select>
+    <div class="form-grid">
+        <div class="form-group">
+            <label for="situation">어떤 상황인가요?</label>
+            <select id="situation">
+                <optgroup label="업무">
+                    <option value="report_progress">진행 상황 보고</option>
+                    <option value="report_result">결과 보고</option>
+                    <option value="request_data">자료 요청</option>
+                    <option value="request_feedback">피드백 요청</option>
+                    <option value="rejection_polite">정중한 거절</option>
+                    <option value="meeting_request">회의 요청</option>
+                </optgroup>
+                <optgroup label="일상">
+                    <option value="apology_late">지각/약속 변경 사과</option>
+                    <option value="appreciation">감사 인사</option>
+                    <option value="congratulation">축하 (생일, 승진 등)</option>
+                    <option value="condolence">위로/격려</option>
+                </optgroup>
+            </select>
+        </div>
 
-    <label for="tone">어떤 톤으로 말할까요?</label>
-    <select id="tone">
-        <option value="polite">정중하게</option>
-        <option value="casual">부드럽게</option>
-        <option value="direct">간결하게</option>
-    </select>
+        <div class="form-group">
+            <label for="target">누구에게 보내나요?</label>
+            <select id="target">
+                <option value="boss">상사/선배</option>
+                <option value="colleague">동료</option>
+                <option value="junior">부하직원/후배</option>
+                <option value="client">고객/거래처</option>
+                <option value="friend">친구/가족</option>
+            </select>
+        </div>
 
-    <label for="detail">추가 정보 (선택)</label>
-    <textarea id="detail" rows="4" placeholder="예: 회의에 10분 정도 늦을 것 같습니다."></textarea>
+        <div class="form-group">
+            <label for="length">어느 정도 길이로 쓸까요?</label>
+            <select id="length">
+                <option value="short">짧게 (1-2 문장)</option>
+                <option value="medium" selected>중간 (3-5 문장)</option>
+                <option value="long">길게 (이메일 형식)</option>
+            </select>
+        </div>
 
-    <button id="generateBtn" onclick="generateText()">🚀 문구 생성하기</button>
+        <div class="form-group">
+            <label for="tone">어떤 톤으로 말할까요?</label>
+            <select id="tone">
+                <option value="polite">격식있고 정중하게</option>
+                <option value="casual">친절하고 부드럽게</option>
+                <option value="direct">간결하고 명확하게</option>
+                <option value="witty">재치있고 위트있게</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="detail">추가 정보 (구체적일수록 결과가 좋아져요)</label>
+        <textarea id="detail" rows="4" placeholder="예: 1분기 프로젝트 실적 보고입니다. 목표 대비 120% 초과 달성했으며, 특히 A 제품의 판매량이 크게 증가했습니다."></textarea>
+    </div>
+
+    <button id="generateBtn" onclick="generateText()">🚀 3가지 문구 생성하기</button>
 
     <div class="result-section">
-        <h2>생성된 문구</h2>
-        <div id="result">
-            <div class="loader"></div>
-            <p id="result-text"></p>
+        <h2>AI 제안 (3가지 버전)</h2>
+        <div id="loader" style="display: none;">
+            <div class="loader-inner"></div>
+            <p>AI가 최적의 문구 3가지를 만들고 있습니다...</p>
         </div>
-        <button id="copyBtn" class="copy-btn" style="display:none;" onclick="copyText()">복사하기</button>
+        <div id="result-cards-container">
+            <!-- 결과 카드가 여기에 동적으로 추가됩니다. -->
+        </div>
     </div>
 
     <div class="history-section">
         <h2>최근 생성 기록</h2>
-        <ul id="history-list">
-            <!-- History items will be injected here by JavaScript -->
-        </ul>
+        <ul id="history-list"></ul>
     </div>
-
 </div>
 
 <script>
-const generateBtn = document.getElementById('generateBtn');
-const resultText = document.getElementById('result-text');
-const resultContainer = document.getElementById('result');
-const loader = document.querySelector('.loader');
-const copyBtn = document.getElementById('copyBtn');
-const historyList = document.getElementById('history-list');
+    const generateBtn = document.getElementById('generateBtn');
+    const resultCardsContainer = document.getElementById('result-cards-container');
+    const loader = document.getElementById('loader');
+    const historyList = document.getElementById('history-list');
 
-// Load history from localStorage on page load
-document.addEventListener('DOMContentLoaded', () => {
-    loadHistory();
-});
+    const situationSelect = document.getElementById('situation');
+    const targetSelect = document.getElementById('target');
+    const lengthSelect = document.getElementById('length');
+    const toneSelect = document.getElementById('tone');
+    const detailTextarea = document.getElementById('detail');
 
-async function generateText() {
-    const situation = document.getElementById("situation").value;
-    const tone = document.getElementById("tone").value;
-    const detail = document.getElementById("detail").value;
+    document.addEventListener('DOMContentLoaded', () => loadHistory());
 
-    // --- UI Update: Show Loader ---
-    resultText.innerText = "";
-    loader.style.display = 'block';
-    copyBtn.style.display = 'none';
-    generateBtn.disabled = true;
-    generateBtn.innerText = '생성 중...';
+    async function generateText() {
+        const [situation, target, length, tone, detail] = [situationSelect.value, targetSelect.value, lengthSelect.value, toneSelect.value, detailTextarea.value];
 
-    try {
-        const response = await fetch('/generate', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ situation, tone, detail })
-        });
+        resultCardsContainer.innerHTML = '';
+        loader.style.display = 'block';
+        generateBtn.disabled = true;
+        generateBtn.innerText = 'AI가 생각하는 중...';
 
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+        try {
+            const response = await fetch('/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ situation, target, length, tone, detail })
+            });
+
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+            const data = await response.json();
+            const texts = data.generatedTexts;
+
+            if (!texts || !Array.isArray(texts) || texts.length === 0) {
+                throw new Error("서버에서 유효한 응답을 받지 못했습니다.");
+            }
+
+            displayResultCards(texts);
+            saveToHistory({ inputs: { situation, target, length, tone, detail }, outputs: texts });
+
+        } catch (error) {
+            console.error("API 호출 오류:", error);
+            resultCardsContainer.innerHTML = `<p class="error-message">문구 생성에 실패했습니다. 잠시 후 다시 시도해주세요.</p>`;
+        } finally {
+            loader.style.display = 'none';
+            generateBtn.disabled = false;
+            generateBtn.innerText = '🚀 3가지 문구 생성하기';
         }
-
-        const data = await response.json();
-        const text = data.generatedText;
-
-        // --- UI Update: Show Result ---\
-        resultText.innerText = text;
-        copyBtn.style.display = 'block';
-        saveToHistory(text);
-
-    } catch (error) {
-        console.error("Error calling generation API:", error);
-        resultText.innerText = "문구 생성에 실패했습니다. 잠시 후 다시 시도해주세요.";
-    } finally {
-        // --- UI Update: Hide Loader ---
-        loader.style.display = 'none';
-        generateBtn.disabled = false;
-        generateBtn.innerText = '🚀 문구 생성하기';
-    }
-}
-
-function copyText() {
-    const text = resultText.innerText;
-    if (text) {
-        navigator.clipboard.writeText(text);
-        alert("문구가 클립보드에 복사되었습니다.");
-    }
-}
-
-function saveToHistory(text) {
-    if (!text) return;
-
-    let history = JSON.parse(localStorage.getItem('generationHistory')) || [];
-
-    // Add new item to the top, avoid duplicates
-    history = history.filter(item => item !== text); // Remove existing
-    history.unshift(text); // Add to the front
-
-    // Keep only the last 5 items
-    if (history.length > 5) {
-        history.pop();
     }
 
-    localStorage.setItem('generationHistory', JSON.stringify(history));
-    loadHistory();
-}
+    function displayResultCards(texts) {
+        resultCardsContainer.innerHTML = '';
+        texts.forEach((text, index) => {
+            const card = document.createElement('div');
+            card.className = 'result-card';
+            card.innerHTML = `
+                <div class="card-header">
+                    <h3>AI 제안 ${index + 1}</h3>
+                    <button class="copy-btn" onclick="copyText(this)">복사</button>
+                </div>
+                <p class="card-text">${text.replace(/
+/g, '<br>')}</p>
+            `;
+            resultCardsContainer.appendChild(card);
+        });
+    }
 
-function loadHistory() {
-    historyList.innerHTML = '';
-    const history = JSON.parse(localStorage.getItem('generationHistory')) || [];
+    function copyText(buttonElement) {
+        const cardText = buttonElement.closest('.result-card').querySelector('.card-text').innerText;
+        navigator.clipboard.writeText(cardText).then(() => {
+            buttonElement.innerText = '복사 완료!';
+            setTimeout(() => { buttonElement.innerText = '복사'; }, 2000);
+        }).catch(err => console.error('Copy failed', err));
+    }
 
-    history.forEach(text => {
-        const li = document.createElement('li');
-        li.className = 'history-item';
-        li.innerText = text.length > 50 ? text.substring(0, 50) + '...' : text;
-        li.onclick = () => {
-            resultText.innerText = text;
-            copyBtn.style.display = 'block';
-            window.scrollTo(0, 0);
-        };
-        historyList.appendChild(li);
-    });
-}
+    // Phase 2를 위한 개선된 히스토리 저장
+    function saveToHistory(record) {
+        let history = JSON.parse(localStorage.getItem('generationHistoryV2')) || [];
+        history.unshift(record);
+        if (history.length > 5) history.pop();
+        localStorage.setItem('generationHistoryV2', JSON.stringify(history));
+        loadHistory();
+    }
+    
+    // Phase 2를 위한 개선된 히스토리 로드
+    function loadHistory() {
+        historyList.innerHTML = '';
+        const history = JSON.parse(localStorage.getItem('generationHistoryV2')) || [];
+        history.forEach(record => {
+            const li = document.createElement('li');
+            li.className = 'history-item';
+            const inputText = `[${record.inputs.situation}] ${record.inputs.detail.substring(0, 30)}...`;
+            li.innerText = inputText;
+            li.onclick = () => {
+                situationSelect.value = record.inputs.situation;
+                targetSelect.value = record.inputs.target;
+                lengthSelect.value = record.inputs.length;
+                toneSelect.value = record.inputs.tone;
+                detailTextarea.value = record.inputs.detail;
+                displayResultCards(record.outputs);
+                window.scrollTo(0, 0);
+            };
+            historyList.appendChild(li);
+        });
+    }
 </script>
 
 </body>
