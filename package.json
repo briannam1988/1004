@@ -1,0 +1,15 @@
+{
+  "name": "ai-text-generator",
+  "version": "1.0.0",
+  "description": "A web application that generates text for various situations using AI.",
+  "private": true,
+  "scripts": {
+    "deploy": "wrangler pages deploy ."
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  },
+  "dependencies": {
+    "@cloudflare/ai": "^1.0.0"
+  }
+}
