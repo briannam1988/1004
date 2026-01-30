@@ -1,16 +1,23 @@
 {
   "name": "ai-text-generator",
   "version": "1.0.0",
-  "description": "A web application that generates text for various situations using AI.",
-  "private": true,
+  "description": "An AI-powered text generation web application",
+  "main": "index.html",
   "scripts": {
-    "build": "npm install",
-    "deploy": "wrangler pages deploy ."
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ai",
+    "text generation",
+    "cloudflare"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@cloudflare/ai": "^1.2.2",
+    "base64-js": "^1.5.1" 
   },
   "devDependencies": {
-    "wrangler": "^3.0.0"
-  },
-  "dependencies": {
-    "@cloudflare/ai": "^1.0.0"
+    "wrangler": "^3.114.17"
   }
 }
