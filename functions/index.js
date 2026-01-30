@@ -9,7 +9,7 @@ const generativeModel = vertex_ai.preview.getGenerativeModel({
     model: model,
     generation_config: {
         "max_output_tokens": 2048,
-        "temperature": 0.5, // Lower temperature for more deterministic, factual answers
+        "temperature": 0.5,
         "top_p": 1,
     },
 });
@@ -42,8 +42,29 @@ async function performAITask(prompt, systemInstruction) {
 
 // Generate Marketing Phrases
 exports.generate = functions.https.onCall((data, context) => {
-    const systemInstruction = "You are an expert copywriter. Generate 3 distinct and compelling marketing phrases.";
-    return performAITask(data.prompt, systemInstruction);
+    const { situation, target, length, tone, detail, lang } = data;
+
+    if (!detail) {
+        throw new functions.https.HttpsError('invalid-argument', 'The "detail" field is required.');
+    }
+
+    // Construct a detailed prompt for the AI based on the structured data
+    const langInstruction = lang === 'ko' ? 'Korean' : 'English';
+    const prompt = `
+        Please generate 3 distinct marketing phrases based on the following criteria.
+        Each phrase must be on a new line.
+
+        - **Situation**: ${situation}
+        - **Target Audience**: ${target}
+        - **Desired Length**: ${length}
+        - **Tone of Voice**: ${tone}
+        - **Language**: ${langInstruction}
+        - **Additional Details**: ${detail}
+    `;
+
+    const systemInstruction = "You are an expert copywriter. Generate 3 distinct and compelling marketing phrases based on the user's detailed request. Each phrase must be on a new line, and only output the phrases.";
+    
+    return performAITask(prompt, systemInstruction);
 });
 
 // Analyze a Decision
