@@ -78,15 +78,8 @@
         <p>&copy; 2024 AI Content Tools. All rights reserved.</p>
     </footer>
 
-    <!-- Firebase SDKs -->
-    <script src="/__/firebase/9.6.1/firebase-app-compat.js"></script>
-    <script src="/__/firebase/9.6.1/firebase-functions-compat.js"></script>
-    <script src="/__/firebase/init.js"></script>
-    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // --- Element References ---
-
             const generateBtn = document.getElementById('generate-btn');
             const situationSelect = document.getElementById('situation');
             const targetSelect = document.getElementById('target');
@@ -98,14 +91,15 @@
             const resultCardsContainer = document.getElementById('result-cards-container');
             const loader = document.querySelector('.loader');
 
-            // --- Event Listener ---
+            const functionUrl = 'https://us-central1-project-1004-34292892-da8ed.cloudfunctions.net/generatePublic';
+
             generateBtn.addEventListener('click', async () => {
                 const situation = situationSelect.value;
                 const target = targetSelect.value;
                 const length = lengthSelect.value;
                 const tone = toneSelect.value;
                 const detail = detailTextarea.value;
-                const lang = 'en'; // Hard-coded for now
+                const lang = 'en';
                 const originalButtonText = generateBtn.innerText;
 
                 if (!detail) {
@@ -113,7 +107,6 @@
                     return;
                 }
 
-                // --- Show loader and disable button ---
                 resultWrapper.style.display = 'block';
                 loader.style.display = 'block';
                 resultCardsContainer.innerHTML = '';
@@ -121,20 +114,26 @@
                 generateBtn.innerText = 'AI is thinking...';
 
                 try {
-                    // Get a reference to the callable function
-                    const generate = firebase.functions().httpsCallable('generate');
+                    const response = await fetch(functionUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ situation, target, length, tone, detail, lang })
+                    });
 
-                    // Call the function with the data object
-                    const response = await generate({ situation, target, length, tone, detail, lang });
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(`The server responded with an error: ${errorText}`);
+                    }
 
-                    // The result from a callable function is in response.data
-                    const resultText = response.data.result;
+                    const data = await response.json();
+                    const resultText = data.result;
 
                     if (resultText) {
-                        const versions = resultText.split('\n').filter(v => v.trim() !== '');
+                        const versions = resultText.split('\\n').filter(v => v.trim() !== '');
                         let html = '';
                         versions.forEach((version, index) => {
-                            // Remove numbering like "1. " from the start of the line
                             const cleanVersion = version.replace(/^\d+\.\s*/, '');
                             html += `<div class="result-card"><h4>Version ${index + 1}</h4><p>${cleanVersion}</p></div>`;
                         });
@@ -147,7 +146,6 @@
                     console.error('Error calling generate function:', error);
                     resultCardsContainer.innerHTML = `<p class="error">An error occurred: ${error.message}</p>`;
                 } finally {
-                    // --- Hide loader and re-enable button ---
                     loader.style.display = 'none';
                     generateBtn.disabled = false;
                     generateBtn.innerText = originalButtonText;
