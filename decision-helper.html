@@ -55,7 +55,7 @@
     <div id="result-wrapper" style="display: none; margin-top: 30px;">
         <div id="loader" style="display: none; text-align: center; padding: 40px 0;">
              <div class="loader-inner"></div>
-             <p>AI is deeply analyzing the two options...</p>
+             <p data-translate-key="loading_decision_text">AI is deeply analyzing the two options...</p>
         </div>
         
         <div id="decision-result"></div>
@@ -73,6 +73,7 @@
         const optionA = document.getElementById('optionA').value;
         const optionB = document.getElementById('optionB').value;
         const context = document.getElementById('decision-context').value;
+        const lang = window.currentLanguage || 'en';
         const originalButtonText = analyzeBtn.innerText;
 
         if (!optionA || !optionB) {
@@ -90,7 +91,7 @@
             const response = await fetch('/analyze-decision', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ optionA, optionB, context })
+                body: JSON.stringify({ optionA, optionB, context, lang })
             });
 
             if (!response.ok) {
@@ -128,18 +129,19 @@
             `;
         });
         
+        // Disclaimer and other texts can also be translated if you add them to your JSON files
         decisionResult.innerHTML = `
             <div class="disclaimer">
-                <p><strong>⚠️ Disclaimer:</strong> This analysis is provided by AI and cannot replace medical, legal, or financial advice. Please consult with a professional for important decisions.</p>
+                <p><strong data-translate-key="disclaimer_title"></strong> <span data-translate-key="disclaimer_text"></span></p>
             </div>
             
             <div class="recommendation-summary">
-                <h3>AI's Final Recommendation: <span class="highlight">${data.recommendation}</span></h3>
+                <h3><span data-translate-key="recommendation_title"></span> <span class="highlight">${data.recommendation}</span></h3>
                 <p>${data.summary}</p>
             </div>
 
             <div class="score-board">
-                <h4>AI Evaluation Score</h4>
+                <h4 data-translate-key="score_title"></h4>
                 <div class="score-item">
                     <label>${data.scores.optionA.name}</label>
                     <div class="progress-bar-container">
@@ -155,11 +157,11 @@
             </div>
 
             <div class="comparison-table">
-                <h4>Detailed Comparison</h4>
+                <h4 data-translate-key="comparison_title"></h4>
                 <table>
                     <thead>
                         <tr>
-                            <th>Criteria</th>
+                            <th data-translate-key="criteria_header"></th>
                             <th>${data.scores.optionA.name}</th>
                             <th>${data.scores.optionB.name}</th>
                         </tr>
@@ -171,10 +173,12 @@
             </div>
 
             <div class="reasoning-section">
-                <h4>AI's Overall Opinion</h4>
+                <h4 data-translate-key="reasoning_title"></h4>
                 <p>${data.reasoning}</p>
             </div>
         `;
+        // We need to re-apply translations for the newly added dynamic content
+        applyTranslations(window.currentLanguage || 'en');
     }
 </script>
 

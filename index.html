@@ -7,12 +7,13 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
+
   gtag('config', 'G-KNDXMH0VS4');
 </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI Text Generator | AI Utility Platform</title>
-    <meta name="description" content="AI suggests 3 versions of perfect text in real-time for any situation, audience, tone, and length. Solve all your writing difficulties, from reports and emails to apologies and requests." />
+    <title data-translate-key="writer_title">AI Text Generator | AI Utility Platform</title>
+    <meta id="meta-description" name="description" content="The AI Text Generator suggests 3 versions of text for various situations, audiences, lengths, and tones." />
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -30,7 +31,10 @@
 
 <div class="container">
     <div class="header">
-        <h1 data-translate-key="writer_title"></h1>
+        <h1>
+            <span data-translate-key="writer_title"></span>
+            <span class="version-badge">v2.0</span>
+        </h1>
         <p class="subtitle" data-translate-key="writer_subtitle"></p>
     </div>
 
@@ -38,50 +42,36 @@
         <div class="form-group">
             <label for="situation" data-translate-key="situation_label"></label>
             <select id="situation">
-                <optgroup label="Work">
-                    <option value="report_progress">Progress Report</option>
-                    <option value="report_result">Result Report</option>
-                    <option value="request_data">Data Request</option>
-                    <option value="request_feedback">Feedback Request</option>
-                    <option value="rejection_polite">Polite Rejection</option>
-                    <option value="meeting_request">Meeting Request</option>
-                </optgroup>
-                <optgroup label="Daily Life">
-                    <option value="apology_late">Apology for being late/changing plans</option>
-                    <option value="appreciation">Thank you message</option>
-                    <option value="congratulation">Congratulations (birthday, promotion, etc.)</option>
-                    <option value="condolence">Condolence/Encouragement</option>
-                </optgroup>
+                <option value="business-report" data-translate-key="situation_option_report"></option>
+                <option value="email-apology" data-translate-key="situation_option_apology"></option>
+                <option value="sns-promotion" data-translate-key="situation_option_sns"></option>
+                <option value="review-request" data-translate-key="situation_option_review"></option>
             </select>
         </div>
-
         <div class="form-group">
             <label for="target" data-translate-key="target_label"></label>
             <select id="target">
-                <option value="boss">Boss/Senior</option>
-                <option value="colleague">Colleague</option>
-                <option value="junior">Junior/Subordinate</option>
-                <option value="client">Client/Customer</option>
-                <option value="friend">Friend/Family</option>
+                <option value="team-leader" data-translate-key="target_option_leader"></option>
+                <option value="client" data-translate-key="target_option_client"></option>
+                <option value="social-media-followers" data-translate-key="target_option_followers"></option>
+                <option value="customer" data-translate-key="target_option_customer"></option>
             </select>
         </div>
-
         <div class="form-group">
             <label for="length" data-translate-key="length_label"></label>
             <select id="length">
-                <option value="short">Short (1-2 sentences)</option>
-                <option value="medium" selected>Medium (3-5 sentences)</option>
-                <option value="long">Long (Email format)</option>
+                <option value="short" data-translate-key="length_option_short"></option>
+                <option value="medium" data-translate-key="length_option_medium"></option>
+                <option value="long" data-translate-key="length_option_long"></option>
             </select>
         </div>
-
         <div class="form-group">
             <label for="tone" data-translate-key="tone_label"></label>
             <select id="tone">
-                <option value="polite">Formal and Polite</option>
-                <option value="casual">Friendly and Gentle</option>
-                <option value="direct">Concise and Clear</option>
-                <option value="witty">Witty and Humorous</option>
+                <option value="professional" data-translate-key="tone_option_professional"></option>
+                <option value="friendly" data-translate-key="tone_option_friendly"></option>
+                <option value="urgent" data-translate-key="tone_option_urgent"></option>
+                <option value="humorous" data-translate-key="tone_option_humorous"></option>
             </select>
         </div>
     </div>
@@ -93,26 +83,30 @@
 
     <button id="generateBtn" onclick="generateText()" data-translate-key="generate_button"></button>
 
-    <div class="result-section">
-        <h2 data-translate-key="result_title"></h2>
+    <div id="result-wrapper" style="display: none; margin-top: 30px;">
         <div id="loader" style="display: none;">
             <div class="loader-inner"></div>
-            <p>AI is creating the 3 best text options...</p>
+            <p data-translate-key="loading_text">AI is creating suggestions based on your input...</p>
         </div>
-        <div id="result-cards-container"></div>
+        <div class="result-section">
+            <h2 data-translate-key="result_title"></h2>
+            <div id="result-cards-container"></div>
+        </div>
     </div>
-
+    
     <div class="history-section">
         <h2 data-translate-key="history_title"></h2>
         <ul id="history-list"></ul>
     </div>
+
 </div>
 
 <script src="i18n.js"></script>
 <script>
     const generateBtn = document.getElementById('generateBtn');
-    const resultCardsContainer = document.getElementById('result-cards-container');
     const loader = document.getElementById('loader');
+    const resultWrapper = document.getElementById('result-wrapper');
+    const resultCardsContainer = document.getElementById('result-cards-container');
     const historyList = document.getElementById('history-list');
 
     const situationSelect = document.getElementById('situation');
@@ -121,98 +115,96 @@
     const toneSelect = document.getElementById('tone');
     const detailTextarea = document.getElementById('detail');
 
-    document.addEventListener('DOMContentLoaded', () => loadHistory());
+document.addEventListener('DOMContentLoaded', () => loadHistory());
 
-    async function generateText() {
-        const [situation, target, length, tone, detail] = [situationSelect.value, targetSelect.value, lengthSelect.value, toneSelect.value, detailTextarea.value];
-        const originalButtonText = generateBtn.innerText;
+async function generateText() {
+    const [situation, target, length, tone, detail] = [situationSelect.value, targetSelect.value, lengthSelect.value, toneSelect.value, detailTextarea.value];
+    const lang = window.currentLanguage || 'en';
+    const originalButtonText = generateBtn.innerText;
 
-        resultCardsContainer.innerHTML = '';
-        loader.style.display = 'block';
-        generateBtn.disabled = true;
-        generateBtn.innerText = 'AI is thinking...';
+    resultWrapper.style.display = 'block';
+    loader.style.display = 'block';
+    resultCardsContainer.innerHTML = '';
+    generateBtn.disabled = true;
+    generateBtn.innerText = 'AI is thinking...';
 
-        try {
-            const response = await fetch('/generate', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ situation, target, length, tone, detail })
-            });
+    try {
+        const response = await fetch('/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ situation, target, length, tone, detail, lang })
+        });
 
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-
-            const data = await response.json();
-            const texts = data.generatedTexts;
-
-            if (!texts || !Array.isArray(texts) || texts.length === 0) {
-                throw new Error("Did not receive a valid response from the server.");
-            }
-
-            displayResultCards(texts);
-            saveToHistory({ inputs: { situation, target, length, tone, detail }, outputs: texts });
-
-        } catch (error) {
-            console.error("API call error:", error);
-            resultCardsContainer.innerHTML = `<p class="error-message">Failed to generate text. Please try again later.</p>`;
-        } finally {
-            loader.style.display = 'none';
-            generateBtn.disabled = false;
-            generateBtn.innerText = originalButtonText;
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
         }
-    }
 
-    function displayResultCards(texts) {
-        resultCardsContainer.innerHTML = '';
-        texts.forEach((text, index) => {
-            const card = document.createElement('div');
-            card.className = 'result-card';
-            card.innerHTML = `
+        const data = await response.json();
+        renderResultCards(data.generatedTexts, { situation, target, length, tone, detail });
+        saveToHistory({ situation, target, length, tone, detail, result: data.generatedTexts });
+
+    } catch (error) {
+        console.error("API call error:", error);
+        resultCardsContainer.innerHTML = `<p class="error-message">Failed to generate text: ${error.message}</p>`;
+    } finally {
+        loader.style.display = 'none';
+        generateBtn.disabled = false;
+        generateBtn.innerText = originalButtonText;
+    }
+}
+
+    function renderResultCards(texts, input) {
+        resultCardsContainer.innerHTML = (texts || []).map((text, index) => `
+            <div class="result-card">
                 <div class="card-header">
-                    <h3>AI Suggestion ${index + 1}</h3>
-                    <button class="copy-btn" onclick="copyText(this)">Copy</button>
+                    <h3>Suggestion ${index + 1}</h3>
+                    <button class="copy-btn" onclick="copyToClipboard(this, '${btoa(encodeURIComponent(text))}')">Copy</button>
                 </div>
                 <p class="card-text">${text.replace(/\n/g, '<br>')}</p>
-            `;
-            resultCardsContainer.appendChild(card);
+            </div>
+        `).join('');
+    }
+
+    function copyToClipboard(button, encodedText) {
+        const textToCopy = decodeURIComponent(atob(encodedText));
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            button.innerText = 'Copied!';
+            setTimeout(() => { button.innerText = 'Copy'; }, 2000);
+        }, (err) => {
+            console.error('Copy failed', err);
+            alert('Failed to copy text.');
         });
     }
 
-    function copyText(buttonElement) {
-        const cardText = buttonElement.closest('.result-card').querySelector('.card-text').innerText;
-        navigator.clipboard.writeText(cardText).then(() => {
-            buttonElement.innerText = 'Copied!';
-            setTimeout(() => { buttonElement.innerText = 'Copy'; }, 2000);
-        }).catch(err => console.error('Copy failed', err));
-    }
-
-    function saveToHistory(record) {
-        let history = JSON.parse(localStorage.getItem('generationHistoryV2')) || [];
-        history.unshift(record);
-        if (history.length > 5) history.pop();
-        localStorage.setItem('generationHistoryV2', JSON.stringify(history));
+    function saveToHistory(entry) {
+        let history = JSON.parse(localStorage.getItem('generationHistory')) || [];
+        history.unshift(entry); // Add to the beginning
+        if (history.length > 5) history = history.slice(0, 5); // Keep last 5
+        localStorage.setItem('generationHistory', JSON.stringify(history));
         loadHistory();
     }
-    
+
     function loadHistory() {
-        historyList.innerHTML = '';
-        const history = JSON.parse(localStorage.getItem('generationHistoryV2')) || [];
-        history.forEach(record => {
-            const li = document.createElement('li');
-            li.className = 'history-item';
-            const inputText = `[${record.inputs.situation}] ${record.inputs.detail.substring(0, 30)}...`;
-            li.innerText = inputText;
-            li.onclick = () => {
-                situationSelect.value = record.inputs.situation;
-                targetSelect.value = record.inputs.target;
-                lengthSelect.value = record.inputs.length;
-                toneSelect.value = record.inputs.tone;
-                detailTextarea.value = record.inputs.detail;
-                displayResultCards(record.outputs);
-                window.scrollTo(0, 0);
-            };
-            historyList.appendChild(li);
-        });
+        const history = JSON.parse(localStorage.getItem('generationHistory')) || [];
+        historyList.innerHTML = history.map(item => `
+            <li class="history-item" onclick='loadFromHistory(${JSON.stringify(item)})'>
+                <strong>[${item.situation}]</strong> to ${item.target} - "${item.result[0].substring(0, 30)}..."
+            </li>
+        `).join('');
     }
+
+    function loadFromHistory(item) {
+        situationSelect.value = item.situation;
+        targetSelect.value = item.target;
+        lengthSelect.value = item.length;
+        toneSelect.value = item.tone;
+        detailTextarea.value = item.detail;
+        renderResultCards(item.result, item);
+        resultWrapper.style.display = 'block';
+        window.scrollTo(0, 0);
+    }
+
 </script>
 
 </body>
