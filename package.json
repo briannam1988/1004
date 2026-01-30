@@ -1,26 +1,15 @@
 {
-  "name": "ai-copy-generator-backend",
+  "name": "ai-copy-generator",
   "version": "1.0.0",
-  "description": "Backend server for the AI copy generator to interact with Google Gemini API.",
-  "main": "server.js",
+  "private": true,
+  "description": "AI-powered copy generator using Cloudflare Pages and Functions",
   "scripts": {
-    "start": "node server.js"
+    "deploy": "wrangler pages deploy ."
   },
-  "engines": {
-    "node": "20"
-  },
-  "keywords": [
-    "ai",
-    "gemini",
-    "nodejs",
-    "express"
-  ],
-  "author": "Your Name",
-  "license": "ISC",
   "dependencies": {
-    "@google/generative-ai": "^0.1.0",
-    "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2"
+    "@google/generative-ai": "^0.11.2"
+  },
+  "devDependencies": {
+    "wrangler": "^3.45.0"
   }
 }
