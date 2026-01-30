@@ -3,54 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Assistant</title>
+    <title>AI-Powered Content Tools</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
     <header>
-        <h1>Your Personal AI Assistant</h1>
-        <p>Perform complex tasks with the power of AI</p>
+        <h1>AI-Powered Content Suite</h1>
+        <p>Generate, analyze, and calculate with the power of AI.</p>
     </header>
 
     <main>
-        <section class="tool-section">
-            <h2>AI Phrase Generator</h2>
-            <div class="tool">
-                <input type="text" id="phrase-prompt" placeholder="Enter a topic (e.g., 'space exploration')">
-                <button id="generate-btn">Generate Phrase</button>
-                <div class="result-box" id="phrase-result">
-                    <p>Your AI-generated phrase will appear here.</p>
+        <!-- Phrase Generation Section -->
+        <section id="phrase-generator" class="tool-section">
+            <h2><span class="icon">✨</span> AI Copy Generator</h2>
+            <p>Create compelling marketing copy for any product or service.</p>
+            <div class="input-group">
+                <label for="phrase-prompt">Enter your product/service description:</label>
+                <textarea id="phrase-prompt" placeholder="e.g., A new coffee shop that serves artisanal, single-origin beans."></textarea>
+                <button id="generate-btn">Generate 3 Phrases</button>
+            </div>
+            <div class="result-box-container">
+                <h3>AI Suggestions (3 Versions)</h3>
+                <div id="phrase-result" class="result-box">
+                    <p>Your generated phrases will appear here...</p>
                 </div>
             </div>
         </section>
 
-        <section class="tool-section">
-            <h2>AI Calculator</h2>
-            <div class="tool">
-                <input type="text" id="calc-prompt" placeholder="Enter a math problem (e.g., '2+2')">
+        <!-- Decision Analysis Section -->
+        <section id="decision-analyzer" class="tool-section">
+            <h2><span class="icon">🤔</span> AI Decision Helper</h2>
+            <p>Get AI-driven analysis to help you make better decisions.</p>
+            <div class="input-group">
+                <label for="decision-prompt">Describe the decision you need to make:</label>
+                <textarea id="decision-prompt" placeholder="e.g., Should I launch my new product in Q3 or Q4?"></textarea>
+                <button id="analyze-btn">Analyze Decision</button>
+            </div>
+            <div class="result-box-container">
+                <h3>AI Analysis</h3>
+                <div id="decision-result" class="result-box">
+                    <p>Your analysis will appear here...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Calculation Section -->
+        <section id="calculator" class="tool-section">
+            <h2><span class="icon">🧮</span> AI-Powered Calculator</h2>
+            <p>Solve complex calculations and quantitative reasoning problems.</p>
+            <div class="input-group">
+                <label for="calc-prompt">Enter your calculation or question:</label>
+                <textarea id="calc-prompt" placeholder="e.g., What is the projected revenue growth if sales increase by 15% each quarter over 2 years, starting with $5000?"></textarea>
                 <button id="calculate-btn">Calculate</button>
-                <div class="result-box" id="calc-result">
-                    <p>The calculation result will appear here.</p>
-                </div>
             </div>
-        </section>
-
-        <section class="tool-section">
-            <h2>AI Decision Helper</h2>
-            <div class="tool">
-                <input type="text" id="decision-prompt" placeholder="Describe your dilemma (e.g., 'coffee or tea?')">
-                <button id="analyze-btn">Get Advice</button>
-                <div class="result-box" id="decision-result">
-                    <p>Our AI's analysis and advice will appear here.</p>
+            <div class="result-box-container">
+                <h3>AI Calculation Result</h3>
+                <div id="calc-result" class="result-box">
+                    <p>Your calculation will appear here...</p>
                 </div>
             </div>
         </section>
     </main>
 
     <footer>
-        <p>&copy; 2024 AI Assistant. All rights reserved.</p>
+        <p>&copy; 2024 AI Content Tools. All rights reserved.</p>
     </footer>
 
-    <script src="main.js"></script>
+    <!-- Firebase SDKs -->
+    <script src="/__/firebase/9.6.1/firebase-app-compat.js"></script>
+    <script src="/__/firebase/9.6.1/firebase-functions-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Firebase
+            const functions = firebase.functions();
+
+            // --- Element References ---
+            const generateBtn = document.getElementById('generate-btn');
+            const phrasePrompt = document.getElementById('phrase-prompt');
+            const phraseResult = document.getElementById('phrase-result');
+
+            const calculateBtn = document.getElementById('calculate-btn');
+            const calcPrompt = document.getElementById('calc-prompt');
+            const calcResult = document.getElementById('calc-result');
+
+            const analyzeBtn = document.getElementById('analyze-btn');
+            const decisionPrompt = document.getElementById('decision-prompt');
+            const decisionResult = document.getElementById('decision-result');
+
+            // --- Helper Function for Firebase Cloud Function Calls ---
+            async function callFunction(functionName, promptValue, resultBox) {
+                if (!promptValue) {
+                    resultBox.innerHTML = '<p class="error">Please enter a prompt first.</p>';
+                    return;
+                }
+
+                resultBox.innerHTML = '<p>Thinking...</p>';
+                resultBox.classList.add('loading');
+                resultBox.classList.remove('error');
+
+                try {
+                    const callable = functions.httpsCallable(functionName);
+                    const response = await callable({ prompt: promptValue });
+                    
+                    const resultText = response.data.result || 'No response text received.';
+                    resultBox.innerHTML = `<p>${resultText}</p>`;
+
+                } catch (error) {
+                    console.error(`Error calling function ${functionName}:`, error);
+                    resultBox.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+                } finally {
+                    resultBox.classList.remove('loading');
+                }
+            }
+
+            // --- Event Listeners ---
+            generateBtn.addEventListener('click', () => {
+                callFunction('generate', phrasePrompt.value, phraseResult);
+            });
+
+            calculateBtn.addEventListener('click', () => {
+                callFunction('calculate', calcPrompt.value, calcResult);
+            });
+
+            analyzeBtn.addEventListener('click', () => {
+                callFunction('analyzeDecision', decisionPrompt.value, decisionResult);
+            });
+        });
+    </script>
+
 </body>
 </html>

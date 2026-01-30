@@ -1,13 +1,59 @@
 const functions = require("firebase-functions");
-const admin = require("firebase-admin");
+const { VertexAI } = require('@google-cloud/vertexai');
 
-admin.initializeApp();
+// Initialize Vertex AI & Model
+const vertex_ai = new VertexAI({ project: 'project-1004-34292892-da8ed', location: 'us-central1' });
+const model = 'gemini-1.0-pro-001';
 
-// Import and re-export the functions from their individual files
-const generate = require("./generate");
-const analyzeDecision = require("./analyze-decision");
-const calculate = require("./calculate");
+const generativeModel = vertex_ai.preview.getGenerativeModel({
+    model: model,
+    generation_config: {
+        "max_output_tokens": 2048,
+        "temperature": 0.5, // Lower temperature for more deterministic, factual answers
+        "top_p": 1,
+    },
+});
 
-exports.generate = generate.generate;
-exports.analyzeDecision = analyzeDecision.analyzeDecision;
-exports.calculate = calculate.calculate;
+// --- Reusable Function for AI Generation ---
+async function performAITask(prompt, systemInstruction) {
+    if (!prompt) {
+        throw new functions.https.HttpsError('invalid-argument', 'A prompt is required for this function.');
+    }
+    try {
+        const req = {
+            contents: [
+                { role: 'user', parts: [{ text: prompt }] },
+                { role: 'model', parts: [{ text: systemInstruction }] }
+            ]
+        };
+        const result = await generativeModel.generateContent(req);
+        if (!result.response.candidates || result.response.candidates.length === 0) {
+            throw new Error('No content candidates returned from AI.');
+        }
+        const text = result.response.candidates[0].content.parts[0].text;
+        return { result: text };
+    } catch (error) {
+        console.error("Error during AI content generation:", error);
+        throw new functions.https.HttpsError('internal', `Failed to perform AI task. Reason: ${error.message}`);
+    }
+}
+
+// --- Cloud Function Exports ---
+
+// Generate Marketing Phrases
+exports.generate = functions.https.onCall((data, context) => {
+    const systemInstruction = "You are an expert copywriter. Generate 3 distinct and compelling marketing phrases.";
+    return performAITask(data.prompt, systemInstruction);
+});
+
+// Analyze a Decision
+exports.analyzeDecision = functions.https.onCall((data, context) => {
+    const systemInstruction = "You are a logical analyst. Provide a balanced analysis of the pros and cons.";
+    return performAITask(data.prompt, systemInstruction);
+});
+
+// Perform a Calculation
+exports.calculate = functions.https.onCall((data, context) => {
+    const systemInstruction = "You are a powerful calculator. Solve the following problem, showing your steps if necessary.";
+    return performAITask(data.prompt, systemInstruction);
+});
