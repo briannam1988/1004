@@ -4,6 +4,7 @@
   "description": "A web application that generates text for various situations using AI.",
   "private": true,
   "scripts": {
+    "build": "npm install",
     "deploy": "wrangler pages deploy ."
   },
   "devDependencies": {
