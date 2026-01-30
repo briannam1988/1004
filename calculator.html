@@ -12,8 +12,8 @@
 </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI Specialty Calculator | AI Utility Platform</title>
-    <meta name="description" content="Easily and quickly calculate complex taxes, salaries, and grants with the AI Specialty Calculator, and check out detailed explanations from the AI." />
+    <title data-translate-key="calculator_title">AI Calculator | AI Utility Platform</title>
+    <meta id="meta-description" name="description" data-translate-key="meta_description_calculator" content="From loans to unit conversions, the AI Calculator solves complex problems and provides detailed step-by-step explanations for free." />
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -31,38 +31,116 @@
 
 <div class="container">
     <div class="header">
-        <h1 data-translate-key="calculator_title"></h1>
+        <h1>
+            <span data-translate-key="calculator_title"></span>
+            <span class="version-badge">v1.0</span>
+        </h1>
         <p class="subtitle" data-translate-key="calculator_subtitle"></p>
     </div>
 
     <div class="form-group">
-        <label for="calculator-type" data-translate-key="calculator_type_label"></label>
-        <select id="calculator-type">
-            <option>-- Select Calculator Type --</option>
-            <option value="freelancer-tax">Freelancer Estimated Tax Calculator</option>
-            <option value="us-salary">US State Take-Home Pay Calculator</option>
-            <option value="vat-calculator">Country VAT Calculator</option>
-        </select>
+        <label for="calc-query" data-translate-key="calculator_type_label"></label>
+        <textarea id="calc-query" rows="5" placeholder="e.g., What is the monthly payment for a $30,000 car loan over 5 years at 4.5% interest? or Convert 150 lbs to kg."></textarea>
     </div>
 
-    <div id="calculator-inputs"></div>
+    <button id="calculateBtn" onclick="performCalculation()">🧮 Calculate with AI</button>
 
-    <button id="calculateBtn" style="display:none;">📈 Calculate and Analyze with AI</button>
-
-    <div class="result-section" style="display:none;">
-        <h2>AI Calculation Results & Analysis</h2>
-        <div id="loader" style="display: none;"></div>
-        <div id="calculator-result"></div>
+    <div id="result-wrapper" style="display: none; margin-top: 30px;">
+        <div id="loader" style="display: none;">
+            <div class="loader-inner"></div>
+            <p>The AI is performing the calculation...</p>
+        </div>
+        <div id="calc-result-section"></div>
     </div>
+
 </div>
 
 <script src="i18n.js"></script>
 <script>
-    document.getElementById('calculator-type').addEventListener('change', function() {
-        if (this.value) {
-            alert('The AI Specialty Calculator feature is currently under development!');
+document.addEventListener('DOMContentLoaded', () => {
+    // Manually setting the button text because its key is not standard
+    const calculateBtn = document.getElementById('calculateBtn');
+    if(window.translations && window.translations['calculate_button']) {
+         calculateBtn.textContent = window.translations['calculate_button'];
+    } else {
+        // Fallback if i18n hasn't loaded yet or key is missing
+        setTimeout(() => {
+            if(window.translations && window.translations['calculate_button']) {
+                calculateBtn.textContent = window.translations['calculate_button'];
+            }
+        }, 500)
+    }
+});
+
+async function performCalculation() {
+    const query = document.getElementById('calc-query').value;
+    const lang = window.currentLanguage || 'en';
+    const calculateBtn = document.getElementById('calculateBtn');
+    const loader = document.getElementById('loader');
+    const resultWrapper = document.getElementById('result-wrapper');
+    const resultSection = document.getElementById('calc-result-section');
+    const originalButtonText = calculateBtn.innerText;
+
+    if (!query) {
+        alert('Please enter a calculation query.');
+        return;
+    }
+
+    resultWrapper.style.display = 'block';
+    loader.style.display = 'block';
+    resultSection.innerHTML = '';
+    calculateBtn.disabled = true;
+    calculateBtn.innerText = 'AI is Calculating...';
+
+    try {
+        const response = await fetch('/calculate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query, lang })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
         }
-    });
+
+        const data = await response.json();
+        renderCalculationResult(data);
+
+    } catch (error) {
+        console.error("API call error:", error);
+        resultSection.innerHTML = `<p class="error-message">Failed to get calculation: ${error.message}</p>`;
+    } finally {
+        loader.style.display = 'none';
+        calculateBtn.disabled = false;
+        calculateBtn.innerText = originalButtonText;
+    }
+}
+
+function renderCalculationResult(data) {
+    const resultSection = document.getElementById('calc-result-section');
+
+    const breakdownHTML = data.breakdown.map(step => `
+        <div class="step-card">
+            <div class="step-header">${step.step}</div>
+            <div class="step-value">${step.value}</div>
+            <div class="step-explanation">${step.explanation}</div>
+        </div>
+    `).join('');
+
+    resultSection.innerHTML = `
+        <div class="summary-card">
+            <h2>Calculation Summary</h2>
+            <p>${data.summary}</p>
+            <div class="final-answer-box">
+                <strong>Final Answer:</strong>
+                <span>${data.finalAnswer}</span>
+            </div>
+        </div>
+        <h2>Detailed Breakdown</h2>
+        <div class="steps-container">${breakdownHTML}</div>
+    `;
+}
 </script>
 
 </body>

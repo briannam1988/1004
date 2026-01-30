@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Assistant</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Your Personal AI Assistant</h1>
+        <p>Perform complex tasks with the power of AI</p>
+    </header>
+
+    <main>
+        <section class="tool-section">
+            <h2>AI Phrase Generator</h2>
+            <div class="tool">
+                <input type="text" id="phrase-prompt" placeholder="Enter a topic (e.g., 'space exploration')">
+                <button id="generate-btn">Generate Phrase</button>
+                <div class="result-box" id="phrase-result">
+                    <p>Your AI-generated phrase will appear here.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="tool-section">
+            <h2>AI Calculator</h2>
+            <div class="tool">
+                <input type="text" id="calc-prompt" placeholder="Enter a math problem (e.g., '2+2')">
+                <button id="calculate-btn">Calculate</button>
+                <div class="result-box" id="calc-result">
+                    <p>The calculation result will appear here.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="tool-section">
+            <h2>AI Decision Helper</h2>
+            <div class="tool">
+                <input type="text" id="decision-prompt" placeholder="Describe your dilemma (e.g., 'coffee or tea?')">
+                <button id="analyze-btn">Get Advice</button>
+                <div class="result-box" id="decision-result">
+                    <p>Our AI's analysis and advice will appear here.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 AI Assistant. All rights reserved.</p>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>

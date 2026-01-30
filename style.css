@@ -141,10 +141,10 @@ select:focus, textarea:focus, input[type="text"]:focus {
 }
 
 /* Result Section */
-.result-section {
+.result-section, #calc-result-section {
     margin-top: 30px;
 }
-.result-section h2 {
+.result-section h2, #calc-result-section h2 {
     text-align: center;
     color: #2c3e50;
     margin-bottom: 20px;
@@ -327,6 +327,73 @@ select:focus, textarea:focus, input[type="text"]:focus {
     background-color: #f2f2f2;
 }
 .comparison-table td:nth-child(1) { width: 25%; }
+
+/* --- AI Calculator Specific --- */
+.summary-card {
+    background-color: #e8f5ff;
+    border-left: 5px solid #2196f3;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+}
+.summary-card h2 {
+    margin-top: 0;
+    color: #1a73e8;
+}
+.summary-card p {
+    margin: 0 0 15px 0;
+    font-size: 1.05em;
+}
+.final-answer-box {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    text-align: center;
+    font-size: 1.2em;
+}
+.final-answer-box strong {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+    font-size: 0.9em;
+}
+.final-answer-box span {
+    font-weight: 700;
+    font-size: 1.4em;
+    color: #1a73e8;
+}
+.steps-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+.step-card {
+    background: #fafafa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+.step-header {
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+}
+.step-value {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #42b983;
+    margin-bottom: 8px;
+}
+.step-explanation {
+    font-size: 0.95em;
+    color: #555;
+}
+
 
 /* --- Language Switcher --- */
 .language-switcher {
