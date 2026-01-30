@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-KNDXMH0VS4"></script>
@@ -12,58 +12,58 @@
 </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI 비교/판단 도우미 | AI 유틸리티 플랫폼</title>
-    <meta name="description" content="결정하기 어려운 고민이 있나요? AI 비교/판단 도우미가 장단점, 핵심 고려사항, 추천 점수를 분석하여 당신의 현명한 결정을 돕습니다." />
-    <meta name="keywords" content="결정 도우미, AI 컨설턴트, 비교 분석, 장단점 분석, 의사결정, 고민 해결, 이직, 퇴사, 전세 월세, 아이폰 갤럭시" />
+    <title>AI Decision Helper | AI Utility Platform</title>
+    <meta name="description" content="Struggling with a tough decision? The AI Decision Helper analyzes pros, cons, key considerations, and recommendation scores to help you make a wise choice." />
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <nav class="nav-bar">
-    <ul class="nav-links">
-        <li><a href="/">AI 문구 생성기</a></li>
-        <li><a href="/decision-helper.html" class="active">AI 비교/판단 도우미</a></li>
-        <li><a href="/calculator.html">AI 특화 계산기</a></li>
-    </ul>
+    <div class="menu">
+        <ul class="nav-links">
+            <li><a href="/" data-translate-key="nav_ai_writer"></a></li>
+            <li><a href="/decision-helper.html" class="active" data-translate-key="nav_decision_helper"></a></li>
+            <li><a href="/calculator.html" data-translate-key="nav_calculator"></a></li>
+        </ul>
+        <!-- Language switcher will be injected here by i18n.js -->
+    </div>
 </nav>
 
 <div class="container">
     <div class="header">
-        <h1>AI 비교/판단 도우미 ⚖️</h1>
-        <p class="subtitle">결정하기 어려운 고민, AI가 장단점과 핵심 근거를 분석해 드립니다.</p>
+        <h1 data-translate-key="decision_title"></h1>
+        <p class="subtitle" data-translate-key="decision_subtitle"></p>
     </div>
 
     <div class="form-grid decision-form">
         <div class="form-group">
-            <label for="optionA">선택 A</label>
-            <input type="text" id="optionA" placeholder="예: 아이폰 15 프로">
+            <label for="optionA" data-translate-key="option_a_label"></label>
+            <input type="text" id="optionA" placeholder="e.g., iPhone 15 Pro">
         </div>
         <div class="form-group">
-            <label for="optionB">선택 B</label>
-            <input type="text" id="optionB" placeholder="예: 갤럭시 S24 울트라">
+            <label for="optionB" data-translate-key="option_b_label"></label>
+            <input type="text" id="optionB" placeholder="e.g., Galaxy S24 Ultra">
         </div>
     </div>
     <div class="form-group">
-        <label for="decision-context">추가 고려사항 (선택)</label>
-        <textarea id="decision-context" rows="3" placeholder="예: 주로 사진 촬영과 모바일 게임을 즐깁니다. 예산은 150만원대입니다."></textarea>
+        <label for="decision-context" data-translate-key="decision_context_label"></label>
+        <textarea id="decision-context" rows="3" data-translate-key="decision_context_placeholder"></textarea>
     </div>
 
-    <button id="analyzeBtn" onclick="analyzeDecision()">🤖 AI 분석 요청하기</button>
+    <button id="analyzeBtn" onclick="analyzeDecision()" data-translate-key="analyze_button"></button>
 
     <div id="result-wrapper" style="display: none; margin-top: 30px;">
         <div id="loader" style="display: none; text-align: center; padding: 40px 0;">
              <div class="loader-inner"></div>
-             <p>AI가 두 가지 선택지를 깊이 있게 분석하고 있습니다...</p>
+             <p>AI is deeply analyzing the two options...</p>
         </div>
         
-        <div id="decision-result">
-            <!-- AI 분석 결과가 여기에 동적으로 채워집니다 -->
-        </div>
+        <div id="decision-result"></div>
     </div>
 </div>
 
+<script src="i18n.js"></script>
 <script>
-    // 이 페이지에 특화된 스크립트
     const analyzeBtn = document.getElementById('analyzeBtn');
     const resultWrapper = document.getElementById('result-wrapper');
     const loader = document.getElementById('loader');
@@ -73,9 +73,10 @@
         const optionA = document.getElementById('optionA').value;
         const optionB = document.getElementById('optionB').value;
         const context = document.getElementById('decision-context').value;
+        const originalButtonText = analyzeBtn.innerText;
 
         if (!optionA || !optionB) {
-            alert('두 가지 선택지를 모두 입력해주세요.');
+            alert('Please enter both options.');
             return;
         }
 
@@ -83,7 +84,7 @@
         loader.style.display = 'block';
         decisionResult.innerHTML = '';
         analyzeBtn.disabled = true;
-        analyzeBtn.innerText = 'AI가 분석하는 중...';
+        analyzeBtn.innerText = 'AI is analyzing...';
 
         try {
             const response = await fetch('/analyze-decision', {
@@ -101,19 +102,18 @@
             renderDecisionResult(data);
 
         } catch (error) {
-            console.error("API 호출 오류:", error);
-            decisionResult.innerHTML = `<p class="error-message">분석에 실패했습니다: ${error.message}</p>`;
+            console.error("API call error:", error);
+            decisionResult.innerHTML = `<p class="error-message">Analysis failed: ${error.message}</p>`;
         } finally {
             loader.style.display = 'none';
             analyzeBtn.disabled = false;
-            analyzeBtn.innerText = '🤖 AI 분석 요청하기';
+            analyzeBtn.innerText = originalButtonText;
         }
     }
 
     function renderDecisionResult(data) {
-        // 데이터가 없거나, scores 객체가 없는 경우를 대비한 방어 코드
         if (!data || !data.scores) {
-            decisionResult.innerHTML = `<p class="error-message">AI로부터 유효한 분석 결과를 받지 못했습니다.</p>`;
+            decisionResult.innerHTML = `<p class="error-message">Did not receive a valid analysis from the AI.</p>`;
             return;
         }
 
@@ -130,36 +130,36 @@
         
         decisionResult.innerHTML = `
             <div class="disclaimer">
-                <p><strong>⚠️ 주의:</strong> 본 분석 결과는 AI가 제공하는 정보이며, 의학적, 법률적, 재정적 조언을 대체할 수 없습니다. 중요한 결정은 전문가와 상의하시기 바랍니다.</p>
+                <p><strong>⚠️ Disclaimer:</strong> This analysis is provided by AI and cannot replace medical, legal, or financial advice. Please consult with a professional for important decisions.</p>
             </div>
             
             <div class="recommendation-summary">
-                <h3>AI의 최종 추천: <span class="highlight">${data.recommendation}</span></h3>
+                <h3>AI's Final Recommendation: <span class="highlight">${data.recommendation}</span></h3>
                 <p>${data.summary}</p>
             </div>
 
             <div class="score-board">
-                <h4>AI 평가 점수</h4>
+                <h4>AI Evaluation Score</h4>
                 <div class="score-item">
                     <label>${data.scores.optionA.name}</label>
                     <div class="progress-bar-container">
-                        <div class="progress-bar" style="width: ${data.scores.optionA.score}%;">${data.scores.optionA.score}점</div>
+                        <div class="progress-bar" style="width: ${data.scores.optionA.score}%;">${data.scores.optionA.score}</div>
                     </div>
                 </div>
                 <div class="score-item">
                     <label>${data.scores.optionB.name}</label>
                     <div class="progress-bar-container">
-                        <div class="progress-bar" style="width: ${data.scores.optionB.score}%; background-color: #5a9bd5;">${data.scores.optionB.score}점</div>
+                        <div class="progress-bar" style="width: ${data.scores.optionB.score}%; background-color: #5a9bd5;">${data.scores.optionB.score}</div>
                     </div>
                 </div>
             </div>
 
             <div class="comparison-table">
-                <h4>상세 비교 분석</h4>
+                <h4>Detailed Comparison</h4>
                 <table>
                     <thead>
                         <tr>
-                            <th>기준</th>
+                            <th>Criteria</th>
                             <th>${data.scores.optionA.name}</th>
                             <th>${data.scores.optionB.name}</th>
                         </tr>
@@ -171,12 +171,11 @@
             </div>
 
             <div class="reasoning-section">
-                <h4>AI의 종합 의견</h4>
+                <h4>AI's Overall Opinion</h4>
                 <p>${data.reasoning}</p>
             </div>
         `;
     }
-
 </script>
 
 </body>

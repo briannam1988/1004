@@ -1,45 +1,69 @@
 # Blueprint: AI Utility Platform
 
-이 문서는 AI 기반 유틸리티 플랫폼 프로젝트의 기능, 디자인, 개발 계획을 정의하는 마스터 설계도입니다.
+## 1. Project Overview
 
-## 1. 프로젝트 비전
+**Purpose:** A web-based platform providing a suite of AI-powered tools to assist users with various daily and professional tasks. The platform is designed to be intuitive, responsive, and globally accessible through multi-language support.
 
-'AI 문구 생성기', 'AI 비교/판단 도우미', 'AI 특화 계산기'라는 3개의 독립적인 AI 도구를 제공하여, 사용자의 일상과 업무 속 다양한 문제를 해결하고, 검색 트래픽과 광고를 통해 지속 가능한 수익을 창출하는 것을 목표로 한다.
+**Core Features:**
+*   **AI Text Generator:** Generates three contextualized text suggestions for various situations (e.g., reports, emails, apologies).
+*   **AI Decision Helper:** Analyzes two options provided by the user, offering a detailed comparison, pros and cons, and a final recommendation.
+*   **AI Specialty Calculator:** (Under Development) A tool designed to handle complex calculations like taxes and salaries, providing detailed AI-powered explanations.
+*   **Multi-Language Support:** The entire platform is available in 10 languages with dynamic language switching.
 
----
+## 2. Implemented Architecture & Design
 
-## 2. 핵심 서비스 (3-Pillar Strategy)
+### 2.1. Frontend Structure
 
-### **Pillar 1: AI 문구 생성기 (V2.0 완료)**
-- **목표:** 커뮤니케이션 효율 극대화
-- **핵심 기능:** 상황, 대상, 톤, 길이에 따른 3가지 버전의 문구 생성
-- **파일:** `index.html`
+*   **HTML:** Three main pages (`index.html`, `decision-helper.html`, `calculator.html`), one for each core tool. The structure is clean, semantic, and utilizes `data-translate-key` attributes for internationalization.
+*   **CSS (`style.css`):** A single stylesheet defines the visual identity of the platform. It uses a modern, clean aesthetic with a responsive design that adapts to various screen sizes. Key features include a flexible grid layout, custom-styled form elements, and a newly added, user-friendly language switcher.
+*   **JavaScript (`i18n.js`):** This file contains the entire logic for the multi-language functionality.
+    *   **Language Detection:** Checks `localStorage` for a user's previous preference, then falls back to the browser's `navigator.language`.
+    *   **Dynamic Loading:** Asynchronously fetches the appropriate language JSON file from the `/locales/` directory.
+    *   **DOM Manipulation:** Traverses the DOM to find all elements with `data-translate-key` and replaces their content with the loaded translations.
+    *   **UI Injection:** Dynamically creates and injects a language switcher dropdown into the navigation bar of every page.
 
-### **Pillar 2: AI 비교/판단 도우미 (Phase 4, 진행 예정)**
-- **목표:** 결정 장애 해결 및 정보 기반 의사결정 지원
-- **핵심 기능:**
-    - 사용자의 고민(예: 이직 vs 잔류)에 대해 AI가 장/단점, 핵심 고려사항, 추천 점수 등을 분석하여 제공
-    - 최종 판단과 함께 상세한 '근거 설명'을 장문으로 제공
-    - 의학적/법률적/투자 관련 조언이 아님을 명확히 하는 고지(Disclaimer) 포함
-- **수익 모델:** 고관여 키워드를 통한 SEO 트래픽 유입 및 고단가 광고(커리어, 금융 등) 배치
-- **파일:** `decision-helper.html`, `functions/decision-helper.js`
+### 2.2. Internationalization (i18n)
 
-### **Pillar 3: AI 특화 계산기 (Phase 5, 진행 예정)**
-- **목표:** 복잡한 계산을 자동화하고, 그 결과를 AI가 쉽게 설명
-- **핵심 기능:**
-    - 특정 주제(예: 미국 주별 세후 월급, 프리랜서 세금)에 대한 정확한 계산 결과 제공 (공식은 하드코딩)
-    - AI가 계산 과정과 결과의 의미를 상세하고 긴 텍스트로 설명
-- **수익 모델:** 계산기 관련 키워드를 통한 SEO 트래픽 및 애드센스 수익 극대화
-- **파일:** `calculator.html`, `functions/calculator.js`
+*   **Translation Files:** All user-facing strings are stored in JSON files within the `locales/` directory (e.g., `en.json`, `ko.json`). This separation of content from code makes it easy to add or edit languages.
+*   **Supported Languages (10):** English (en), Korean (ko), Japanese (ja), Chinese (zh), Spanish (es), French (fr), German (de), Russian (ru), Portuguese (pt), Arabic (ar).
 
----
+### 2.3. Design & UI/UX
 
-## 3. 개발 계획 로드맵
+*   **Layout:** A container-based, centered layout for a focused user experience.
+*   **Navigation:** A clear, consistent top navigation bar allows easy switching between the different AI tools. On mobile devices, the navigation adapts to a vertical layout.
+*   **Visual Identity:** The color scheme is based on a professional and trustworthy palette of blues and greens (`#2c3e50`, `#42b983`). Interactive elements have clear hover and disabled states.
+*   **Language Switcher:** A dropdown menu is placed on the right side of the navigation bar, displaying the current language and allowing users to easily switch to another.
 
-- **Phase 0-1:** 문구 생성기 MVP 및 V2.0 개발 (완료)
-- **Phase 2-3:** 문구 생성기 고도화 (히스토리, 공유 기능 등 / 예정)
-- **Phase 4:** **AI 비교/판단 도우미 개발 (착수)**
-    - [ ] 전역 메뉴 바 UI 구현 및 페이지 분리 (`index.html`, `decision-helper.html`, `calculator.html`)
-    - [ ] `decision-helper.html` 프론트엔드 UI/UX 개발
-    - [ ] `functions/decision-helper.js` 백엔드 AI 프롬프트 및 로직 개발
-- **Phase 5:** AI 특화 계산기 개발 (예정)
+## 3. Plan & Steps for the Current Request (Multi-Language Support)
+
+**Objective:** Refactor the existing Korean-only web application to support multiple languages, making it accessible to a global audience.
+
+**Execution Steps:**
+
+1.  **[Completed]** **File Structure Setup:** Created a `locales` directory to store all language-specific JSON files.
+
+2.  **[Completed]** **Create Translation Files:**
+    *   Created `en.json` as the default/base language file.
+    *   Translated the content into 9 additional languages: `ko.json`, `ja.json`, `zh.json`, `es.json`, `fr.json`, `de.json`, `ru.json`, `pt.json`, and `ar.json`.
+
+3.  **[Completed]** **Develop Translation Logic (`i18n.js`):**
+    *   Implemented functions to detect the user's preferred language.
+    *   Wrote an asynchronous function to fetch and parse the relevant `.json` translation file.
+    *   Created the core `applyTranslations()` function to scan the DOM and replace text content based on `data-translate-key` attributes.
+    *   Developed the `createLanguageSwitcher()` function to dynamically build and inject the UI component into the navigation bar.
+
+4.  **[Completed]** **Refactor HTML Files:**
+    *   Modified `index.html`, `decision-helper.html`, and `calculator.html`.
+    *   Changed the primary language attribute to `<html lang="en">`.
+    *   Replaced all hardcoded text elements (headings, labels, buttons, placeholders) with `data-translate-key` attributes.
+    *   Included the `<script src="i18n.js"></script>` at the end of the `<body>`.
+    *   Updated the navigation bar structure to support the injected language switcher.
+
+5.  **[Completed]** **Update Stylesheet (`style.css`):**
+    *   Added CSS rules to style the `.language-switcher`, `.selected-lang`, and `.lang-dropdown` classes for a polished and functional dropdown menu.
+    *   Modified the `.nav-bar .menu` styles to use Flexbox `space-between`, ensuring the main navigation links and the language switcher are aligned to opposite ends.
+    *   Added responsive styles to ensure the language switcher and navigation bar look good on mobile devices.
+
+6.  **[Completed]** **Final Review and Documentation:**
+    *   Verified that all pages and languages work as expected.
+    *   Created this `blueprint.md` file to document the new architecture and the steps taken.

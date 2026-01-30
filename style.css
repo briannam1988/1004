@@ -26,10 +26,17 @@ body {
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
+.nav-bar .menu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
 .nav-links {
     list-style: none;
     display: flex;
-    justify-content: center;
     margin: 0;
     padding: 0;
 }
@@ -40,6 +47,7 @@ body {
     font-weight: 600;
     border-radius: 6px;
     transition: background-color 0.3s;
+    white-space: nowrap;
 }
 .nav-links li a:hover {
     background-color: #34495e;
@@ -203,8 +211,36 @@ select:focus, textarea:focus, input[type="text"]:focus {
     color: #333;
 }
 
-/* --- History Section Specific --- */
-.history-section { /* ... */ }
+/* --- History Section --- */
+.history-section {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+}
+.history-section h2 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 15px;
+}
+#history-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.history-item {
+    background: #f9f9f9;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    border: 1px solid #eee;
+}
+.history-item:hover {
+    background-color: #f0f0f0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
 
 /* --- AI Decision Helper Specific --- */
 .disclaimer {
@@ -292,6 +328,57 @@ select:focus, textarea:focus, input[type="text"]:focus {
 }
 .comparison-table td:nth-child(1) { width: 25%; }
 
+/* --- Language Switcher --- */
+.language-switcher {
+    position: relative;
+    display: inline-block;
+}
+
+.selected-lang {
+    cursor: pointer;
+    padding: 10px 15px;
+    background-color: #34495e;
+    color: white;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+.selected-lang:hover {
+    background-color: #4a637e;
+}
+
+.lang-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #f9f9f9;
+    min-width: 100px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 100;
+    list-style: none;
+    padding: 0;
+    margin: 5px 0 0 0;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.lang-dropdown li a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+    font-weight: normal;
+    border-radius: 0;
+}
+
+.lang-dropdown li a:hover {
+    background-color: #f1f1f1;
+    color: #2c3e50;
+}
+
+
 /* --- Responsive Design --- */
 @media (max-width: 768px) {
     #result-cards-container, .form-grid {
@@ -324,9 +411,9 @@ select:focus, textarea:focus, input[type="text"]:focus {
         white-space: nowrap;
         font-weight: bold;
     }
-    .comparison-table td:nth-of-type(1):before { content: "기준"; }
-    .comparison-table td:nth-of-type(2):before { content: "선택 A"; }
-    .comparison-table td:nth-of-type(3):before { content: "선택 B"; }
+    .comparison-table td:nth-of-type(1):before { content: "Criteria"; }
+    .comparison-table td:nth-of-type(2):before { content: "Option A"; }
+    .comparison-table td:nth-of-type(3):before { content: "Option B"; }
     
     .score-item {
         flex-direction: column;
@@ -334,6 +421,35 @@ select:focus, textarea:focus, input[type="text"]:focus {
     }
     .score-item label { width: auto; margin-bottom: 5px; }
     .progress-bar-container { width: 100%; }
+
+    .nav-bar .menu {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 0 10px;
+    }
+    .nav-links {
+        flex-direction: column;
+        width: 100%;
+        align-items: center;
+    }
+    .nav-links li {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+    .nav-links li a {
+        display: block;
+        text-align: center;
+    }
+    .language-switcher {
+        margin-top: 10px;
+        width: 100%;
+    }
+    .selected-lang {
+        text-align: center;
+    }
+    .lang-dropdown {
+        width: 100%;
+    }
 }
 
 @media (max-width: 600px) {

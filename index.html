@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-KNDXMH0VS4"></script>
@@ -7,114 +7,108 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'G-KNDXMH0VS4');
 </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI 문구 생성기 V2.0 | AI 유틸리티 플랫폼</title>
-    <meta name="description" content="AI가 상황, 대상, 톤, 길이에 맞춰 3가지 버전의 완벽한 문구를 실시간으로 제안해드립니다. 보고서, 이메일, 사과, 요청 등 모든 글쓰기의 어려움을 해결하세요." />
-    <meta name="keywords" content="AI 문구 생성기, AI 글쓰기, 이메일 자동 작성, 보고서 작성법, 비즈니스 이메일, 정중한 거절, 사과 문자, 글쓰기 도우미, 버전 2.0" />
-    <link rel="canonical" href="https://ai-text-generator.pages.dev" />
-    <meta property="og:title" content="AI 문구 생성기 V2.0 | 3가지 제안으로 더 완벽하게" />
-    <meta property="og:description" content="상황, 대상, 톤, 길이에 맞춰 AI가 3가지 버전의 문구를 제안합니다. 이제 글쓰기 고민은 끝." />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://ai-text-generator.pages.dev" />
-    <meta property="og:image" content="https://ai-text-generator.pages.dev/og-image-v2.png" />
+    <title>AI Text Generator | AI Utility Platform</title>
+    <meta name="description" content="AI suggests 3 versions of perfect text in real-time for any situation, audience, tone, and length. Solve all your writing difficulties, from reports and emails to apologies and requests." />
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <nav class="nav-bar">
-    <ul class="nav-links">
-        <li><a href="/" class="active">AI 문구 생성기</a></li>
-        <li><a href="/decision-helper.html">AI 비교/판단 도우미</a></li>
-        <li><a href="/calculator.html">AI 특화 계산기</a></li>
-    </ul>
+    <div class="menu">
+        <ul class="nav-links">
+            <li><a href="/" class="active" data-translate-key="nav_ai_writer"></a></li>
+            <li><a href="/decision-helper.html" data-translate-key="nav_decision_helper"></a></li>
+            <li><a href="/calculator.html" data-translate-key="nav_calculator"></a></li>
+        </ul>
+        <!-- Language switcher will be injected here by i18n.js -->
+    </div>
 </nav>
 
 <div class="container">
     <div class="header">
-        <h1>AI 문구 생성기 ✨ <span class="version-badge">V2.0</span></h1>
-        <p class="subtitle">상황, 대상, 톤, 길이에 맞춰 AI가 3가지 버전의 문구를 제안합니다.</p>
+        <h1 data-translate-key="writer_title"></h1>
+        <p class="subtitle" data-translate-key="writer_subtitle"></p>
     </div>
 
     <div class="form-grid">
         <div class="form-group">
-            <label for="situation">어떤 상황인가요?</label>
+            <label for="situation" data-translate-key="situation_label"></label>
             <select id="situation">
-                <optgroup label="업무">
-                    <option value="report_progress">진행 상황 보고</option>
-                    <option value="report_result">결과 보고</option>
-                    <option value="request_data">자료 요청</option>
-                    <option value="request_feedback">피드백 요청</option>
-                    <option value="rejection_polite">정중한 거절</option>
-                    <option value="meeting_request">회의 요청</option>
+                <optgroup label="Work">
+                    <option value="report_progress">Progress Report</option>
+                    <option value="report_result">Result Report</option>
+                    <option value="request_data">Data Request</option>
+                    <option value="request_feedback">Feedback Request</option>
+                    <option value="rejection_polite">Polite Rejection</option>
+                    <option value="meeting_request">Meeting Request</option>
                 </optgroup>
-                <optgroup label="일상">
-                    <option value="apology_late">지각/약속 변경 사과</option>
-                    <option value="appreciation">감사 인사</option>
-                    <option value="congratulation">축하 (생일, 승진 등)</option>
-                    <option value="condolence">위로/격려</option>
+                <optgroup label="Daily Life">
+                    <option value="apology_late">Apology for being late/changing plans</option>
+                    <option value="appreciation">Thank you message</option>
+                    <option value="congratulation">Congratulations (birthday, promotion, etc.)</option>
+                    <option value="condolence">Condolence/Encouragement</option>
                 </optgroup>
             </select>
         </div>
 
         <div class="form-group">
-            <label for="target">누구에게 보내나요?</label>
+            <label for="target" data-translate-key="target_label"></label>
             <select id="target">
-                <option value="boss">상사/선배</option>
-                <option value="colleague">동료</option>
-                <option value="junior">부하직원/후배</option>
-                <option value="client">고객/거래처</option>
-                <option value="friend">친구/가족</option>
+                <option value="boss">Boss/Senior</option>
+                <option value="colleague">Colleague</option>
+                <option value="junior">Junior/Subordinate</option>
+                <option value="client">Client/Customer</option>
+                <option value="friend">Friend/Family</option>
             </select>
         </div>
 
         <div class="form-group">
-            <label for="length">어느 정도 길이로 쓸까요?</label>
+            <label for="length" data-translate-key="length_label"></label>
             <select id="length">
-                <option value="short">짧게 (1-2 문장)</option>
-                <option value="medium" selected>중간 (3-5 문장)</option>
-                <option value="long">길게 (이메일 형식)</option>
+                <option value="short">Short (1-2 sentences)</option>
+                <option value="medium" selected>Medium (3-5 sentences)</option>
+                <option value="long">Long (Email format)</option>
             </select>
         </div>
 
         <div class="form-group">
-            <label for="tone">어떤 톤으로 말할까요?</label>
+            <label for="tone" data-translate-key="tone_label"></label>
             <select id="tone">
-                <option value="polite">격식있고 정중하게</option>
-                <option value="casual">친절하고 부드럽게</option>
-                <option value="direct">간결하고 명확하게</option>
-                <option value="witty">재치있고 위트있게</option>
+                <option value="polite">Formal and Polite</option>
+                <option value="casual">Friendly and Gentle</option>
+                <option value="direct">Concise and Clear</option>
+                <option value="witty">Witty and Humorous</option>
             </select>
         </div>
     </div>
 
     <div class="form-group">
-        <label for="detail">추가 정보 (구체적일수록 결과가 좋아져요)</label>
-        <textarea id="detail" rows="4" placeholder="예: 1분기 프로젝트 실적 보고입니다. 목표 대비 120% 초과 달성했으며, 특히 A 제품의 판매량이 크게 증가했습니다."></textarea>
+        <label for="detail" data-translate-key="detail_label"></label>
+        <textarea id="detail" rows="4" data-translate-key="detail_placeholder"></textarea>
     </div>
 
-    <button id="generateBtn" onclick="generateText()">🚀 3가지 문구 생성하기</button>
+    <button id="generateBtn" onclick="generateText()" data-translate-key="generate_button"></button>
 
     <div class="result-section">
-        <h2>AI 제안 (3가지 버전)</h2>
+        <h2 data-translate-key="result_title"></h2>
         <div id="loader" style="display: none;">
             <div class="loader-inner"></div>
-            <p>AI가 최적의 문구 3가지를 만들고 있습니다...</p>
+            <p>AI is creating the 3 best text options...</p>
         </div>
-        <div id="result-cards-container">
-            <!-- 결과 카드가 여기에 동적으로 추가됩니다. -->
-        </div>
+        <div id="result-cards-container"></div>
     </div>
 
     <div class="history-section">
-        <h2>최근 생성 기록</h2>
+        <h2 data-translate-key="history_title"></h2>
         <ul id="history-list"></ul>
     </div>
 </div>
 
+<script src="i18n.js"></script>
 <script>
     const generateBtn = document.getElementById('generateBtn');
     const resultCardsContainer = document.getElementById('result-cards-container');
@@ -131,11 +125,12 @@
 
     async function generateText() {
         const [situation, target, length, tone, detail] = [situationSelect.value, targetSelect.value, lengthSelect.value, toneSelect.value, detailTextarea.value];
+        const originalButtonText = generateBtn.innerText;
 
         resultCardsContainer.innerHTML = '';
         loader.style.display = 'block';
         generateBtn.disabled = true;
-        generateBtn.innerText = 'AI가 생각하는 중...';
+        generateBtn.innerText = 'AI is thinking...';
 
         try {
             const response = await fetch('/generate', {
@@ -150,19 +145,19 @@
             const texts = data.generatedTexts;
 
             if (!texts || !Array.isArray(texts) || texts.length === 0) {
-                throw new Error("서버에서 유효한 응답을 받지 못했습니다.");
+                throw new Error("Did not receive a valid response from the server.");
             }
 
             displayResultCards(texts);
             saveToHistory({ inputs: { situation, target, length, tone, detail }, outputs: texts });
 
         } catch (error) {
-            console.error("API 호출 오류:", error);
-            resultCardsContainer.innerHTML = `<p class="error-message">문구 생성에 실패했습니다. 잠시 후 다시 시도해주세요.</p>`;
+            console.error("API call error:", error);
+            resultCardsContainer.innerHTML = `<p class="error-message">Failed to generate text. Please try again later.</p>`;
         } finally {
             loader.style.display = 'none';
             generateBtn.disabled = false;
-            generateBtn.innerText = '🚀 3가지 문구 생성하기';
+            generateBtn.innerText = originalButtonText;
         }
     }
 
@@ -173,11 +168,10 @@
             card.className = 'result-card';
             card.innerHTML = `
                 <div class="card-header">
-                    <h3>AI 제안 ${index + 1}</h3>
-                    <button class="copy-btn" onclick="copyText(this)">복사</button>
+                    <h3>AI Suggestion ${index + 1}</h3>
+                    <button class="copy-btn" onclick="copyText(this)">Copy</button>
                 </div>
-                <p class="card-text">${text.replace(/
-/g, '<br>')}</p>
+                <p class="card-text">${text.replace(/\n/g, '<br>')}</p>
             `;
             resultCardsContainer.appendChild(card);
         });
@@ -186,12 +180,11 @@
     function copyText(buttonElement) {
         const cardText = buttonElement.closest('.result-card').querySelector('.card-text').innerText;
         navigator.clipboard.writeText(cardText).then(() => {
-            buttonElement.innerText = '복사 완료!';
-            setTimeout(() => { buttonElement.innerText = '복사'; }, 2000);
+            buttonElement.innerText = 'Copied!';
+            setTimeout(() => { buttonElement.innerText = 'Copy'; }, 2000);
         }).catch(err => console.error('Copy failed', err));
     }
 
-    // Phase 2를 위한 개선된 히스토리 저장
     function saveToHistory(record) {
         let history = JSON.parse(localStorage.getItem('generationHistoryV2')) || [];
         history.unshift(record);
@@ -200,7 +193,6 @@
         loadHistory();
     }
     
-    // Phase 2를 위한 개선된 히스토리 로드
     function loadHistory() {
         historyList.innerHTML = '';
         const history = JSON.parse(localStorage.getItem('generationHistoryV2')) || [];

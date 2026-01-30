@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-KNDXMH0VS4"></script>
@@ -12,59 +12,55 @@
 </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI 특화 계산기 | AI 유틸리티 플랫폼</title>
-    <meta name="description" content="복잡한 세금, 월급, 지원금을 AI 특화 계산기로 쉽고 빠르게 계산하고, AI의 상세한 설명까지 확인하세요." />
-    <meta name="keywords" content="AI 계산기, 세금 계산기, 월급 계산기, 프리랜서 세금, 출산휴가 급여, 연말정산, 롱테일 SEO" />
+    <title>AI Specialty Calculator | AI Utility Platform</title>
+    <meta name="description" content="Easily and quickly calculate complex taxes, salaries, and grants with the AI Specialty Calculator, and check out detailed explanations from the AI." />
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <nav class="nav-bar">
-    <ul class="nav-links">
-        <li><a href="/">AI 문구 생성기</a></li>
-        <li><a href="/decision-helper.html">AI 비교/판단 도우미</a></li>
-        <li><a href="/calculator.html" class="active">AI 특화 계산기</a></li>
-    </ul>
+    <div class="menu">
+        <ul class="nav-links">
+            <li><a href="/" data-translate-key="nav_ai_writer"></a></li>
+            <li><a href="/decision-helper.html" data-translate-key="nav_decision_helper"></a></li>
+            <li><a href="/calculator.html" class="active" data-translate-key="nav_calculator"></a></li>
+        </ul>
+        <!-- Language switcher will be injected here by i18n.js -->
+    </div>
 </nav>
 
 <div class="container">
     <div class="header">
-        <h1>AI 특화 계산기 🧮</h1>
-        <p class="subtitle">복잡한 계산은 AI에게 맡기고, 상세한 설명까지 한번에 확인하세요.</p>
+        <h1 data-translate-key="calculator_title"></h1>
+        <p class="subtitle" data-translate-key="calculator_subtitle"></p>
     </div>
 
     <div class="form-group">
-        <label for="calculator-type">어떤 계산이 필요한가요?</label>
+        <label for="calculator-type" data-translate-key="calculator_type_label"></label>
         <select id="calculator-type">
-            <option>-- 계산기 종류 선택 --</option>
-            <option value="freelancer-tax">프리랜서 예상 세금 계산기</option>
-            <option value="us-salary">미국 주별 세후 월급 계산기</option>
-            <option value="vat-calculator">국가별 부가세(VAT) 계산기</option>
+            <option>-- Select Calculator Type --</option>
+            <option value="freelancer-tax">Freelancer Estimated Tax Calculator</option>
+            <option value="us-salary">US State Take-Home Pay Calculator</option>
+            <option value="vat-calculator">Country VAT Calculator</option>
         </select>
     </div>
 
-    <div id="calculator-inputs">
-        <!-- 계산기 종류에 따라 다른 입력 필드가 여기에 표시됩니다. -->
-    </div>
+    <div id="calculator-inputs"></div>
 
-    <button id="calculateBtn" style="display:none;">📈 AI로 계산 및 분석하기</button>
+    <button id="calculateBtn" style="display:none;">📈 Calculate and Analyze with AI</button>
 
     <div class="result-section" style="display:none;">
-        <h2>AI 계산 결과 및 분석</h2>
-        <div id="loader" style="display: none;">
-            <!-- ... loader ... -->
-        </div>
-        <div id="calculator-result">
-            <!-- AI 계산 결과 및 설명이 여기에 표시됩니다. -->
-        </div>
+        <h2>AI Calculation Results & Analysis</h2>
+        <div id="loader" style="display: none;"></div>
+        <div id="calculator-result"></div>
     </div>
 </div>
 
+<script src="i18n.js"></script>
 <script>
-    // 페이지에 특화된 스크립트 (향후 개발 예정)
     document.getElementById('calculator-type').addEventListener('change', function() {
         if (this.value) {
-            alert('AI 특화 계산기 기능은 현재 개발 중입니다!');
+            alert('The AI Specialty Calculator feature is currently under development!');
         }
     });
 </script>
