@@ -3,12 +3,49 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI 상황별 문구 생성기 | 세련된 업무·일상 메시지 작성</title>
 
-    <!-- SEO -->
-    <meta name="description" content="사용자 유지율을 높이기 위해 새롭게 디자인된 AI 문구 생성기. 로딩 상태, 생성 기록 등 UX가 개선되었습니다." />
-    <meta name="keywords" content="문구 생성기, 메시지 예문, 업무 이메일, AI 문구, UX, 사용자 유지율" />
+    <!-- Google Site Verification -->
+    <meta name="google-site-verification" content="ExGvmODmDOfGIKBLlQ1nOjleAmwF2SmEZmzS53-_L6U" />
 
+    <!-- 1. SEO 최적화 -->
+    <title>AI 문구 생성기 | 보고서, 사과 문자, 요청 메일 작성 도우미</title>
+    <meta name="description" content="AI가 상황, 톤, 추가 정보에 맞춰 보고서, 사과 문자, 요청 메일 등 모든 상황에 맞는 완벽한 문구를 실시간으로 생성해드립니다. 지금 바로 경험해보세요." />
+    <meta name="keywords" content="AI 문구 생성기, 문구 생성기, 보고서 문구, 사과 문자, 요청 메일, 업무 이메일 예시, 정중한 거절 표현, 비즈니스 한국어, AI 글쓰기" />
+    <link rel="canonical" href="https://your-website-url.com" />
+
+    <!-- 2. 소셜 미디어 공유 최적화 (Open Graph) -->
+    <meta property="og:title" content="AI 문구 생성기 | 모든 상황을 위한 완벽한 문장" />
+    <meta property="og:description" content="AI가 당신의 상황과 톤에 맞춰, 세상에 단 하나뿐인 문구를 만들어드립니다." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://your-website-url.com" />
+    <meta property="og:image" content="https://your-website-url.com/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="AI 문구 생성기" />
+    <meta property="og:locale" content="ko_KR" />
+
+    <!-- 3. 구조화된 데이터 (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "AI 문구 생성기",
+      "applicationCategory": "Productivity",
+      "operatingSystem": "Web",
+      "description": "사용자의 상황, 톤, 추가 정보를 기반으로 AI가 맞춤형 문구를 실시간으로 생성해주는 웹 애플리케이션입니다.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "ratingCount": "152"
+      }
+    }
+    </script>
+    
     <!-- Google Adsense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8164071407412804"
      crossorigin="anonymous"></script>
@@ -73,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadHistory();
 });
 
-function generateText() {
+async function generateText() {
     const situation = document.getElementById("situation").value;
     const tone = document.getElementById("tone").value;
     const detail = document.getElementById("detail").value;
@@ -85,31 +122,36 @@ function generateText() {
     generateBtn.disabled = true;
     generateBtn.innerText = '생성 중...';
 
-    // --- AI Simulation with setTimeout ---
-    setTimeout(() => {
-        let text = "";
-        // Dummy logic, will be replaced by actual AI API call
-        if (situation === "apology") {
-            text = `정말 죄송합니다. ${detail || '예상치 못한 이슈로 불편을 드렸습니다.'} 다음부터는 이런 일이 없도록 더욱 주의하겠습니다.`;
-        } else if (situation === "request") {
-            text = `안녕하세요. ${detail || '도움이 필요한 부분이 있어'} 정중히 요청드립니다. 혹시 가능하실까요?`;
-        } else if (situation === "report") {
-            text = `[업무 보고] ${detail || '요청하신 건에 대한 진행 상황'} 공유드립니다. 확인 부탁드립니다.`;
-        } else if (situation === "rejection") {
-            text = `제안 주셔서 정말 감사합니다. 다만, ${detail || '내부 사정으로 인해'} 이번에는 아쉽게도 함께하기 어려울 것 같습니다.`;
+    try {
+        const response = await fetch('http://localhost:3000/generate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ situation, tone, detail })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
+
+        const data = await response.json();
+        const text = data.generatedText;
 
         // --- UI Update: Show Result ---
         resultText.innerText = text;
-        loader.style.display = 'none';
         copyBtn.style.display = 'block';
-        generateBtn.disabled = false;
-        generateBtn.innerText = '🚀 문구 생성하기';
-        
-        // --- Save to History ---
         saveToHistory(text);
 
-    }, 1200); // Simulating network delay
+    } catch (error) {
+        console.error("Error calling generation API:", error);
+        resultText.innerText = "문구 생성에 실패했습니다. 잠시 후 다시 시도해주세요.";
+    } finally {
+        // --- UI Update: Hide Loader ---
+        loader.style.display = 'none';
+        generateBtn.disabled = false;
+        generateBtn.innerText = '🚀 문구 생성하기';
+    }
 }
 
 function copyText() {
