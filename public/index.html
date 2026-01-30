@@ -61,15 +61,16 @@
 
                 <button id="generate-btn">Generate 3 Phrases</button>
             </div>
-            <div class="result-box-container">
+            <div id="result-wrapper" class="result-box-container" style="display: none;">
                 <h3>AI Suggestions (3 Versions)</h3>
-                <div id="phrase-result" class="result-box">
-                    <p>Your generated phrases will appear here...</p>
+                <div id="result-cards-container" class="result-box">
+                    <!-- Results will be injected here -->
+                </div>
+                <div class="loader-container">
+                    <div class="loader" style="display: none;"></div>
                 </div>
             </div>
         </section>
-
-        <!-- Other sections remain the same -->
 
     </main>
 
@@ -84,7 +85,7 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const functions = firebase.functions();
+            // --- Element References ---
 
             const generateBtn = document.getElementById('generate-btn');
             const situationSelect = document.getElementById('situation');
@@ -92,49 +93,62 @@
             const lengthSelect = document.getElementById('length');
             const toneSelect = document.getElementById('tone');
             const detailTextarea = document.getElementById('detail');
-            const resultWrapper = document.getElementById('phrase-result');
-            
-            // Generic loader element
-            const loaderHTML = '<div class="loader"></div>'; 
 
+            const resultWrapper = document.getElementById('result-wrapper');
+            const resultCardsContainer = document.getElementById('result-cards-container');
+            const loader = document.querySelector('.loader');
+
+            // --- Event Listener ---
             generateBtn.addEventListener('click', async () => {
                 const situation = situationSelect.value;
                 const target = targetSelect.value;
                 const length = lengthSelect.value;
                 const tone = toneSelect.value;
                 const detail = detailTextarea.value;
-                const lang = 'en'; // Assuming English for now
+                const lang = 'en'; // Hard-coded for now
                 const originalButtonText = generateBtn.innerText;
 
                 if (!detail) {
-                    resultWrapper.innerHTML = '<p class="error">Please enter a description.</p>';
+                    alert('Please enter a description.');
                     return;
                 }
 
+                // --- Show loader and disable button ---
                 resultWrapper.style.display = 'block';
-                resultWrapper.innerHTML = loaderHTML;
+                loader.style.display = 'block';
+                resultCardsContainer.innerHTML = '';
                 generateBtn.disabled = true;
                 generateBtn.innerText = 'AI is thinking...';
 
                 try {
-                    const generateFunction = functions.httpsCallable('generate');
-                    const response = await generateFunction({ situation, target, length, tone, detail, lang });
-                    
-                    if (response.data && response.data.result) {
-                        const versions = response.data.result.split('\n').filter(v => v.trim() !== '');
+                    // Get a reference to the callable function
+                    const generate = firebase.functions().httpsCallable('generate');
+
+                    // Call the function with the data object
+                    const response = await generate({ situation, target, length, tone, detail, lang });
+
+                    // The result from a callable function is in response.data
+                    const resultText = response.data.result;
+
+                    if (resultText) {
+                        const versions = resultText.split('\n').filter(v => v.trim() !== '');
                         let html = '';
                         versions.forEach((version, index) => {
-                            html += `<div class="result-card"><h4>Version ${index + 1}</h4><p>${version}</p></div>`;
+                            // Remove numbering like "1. " from the start of the line
+                            const cleanVersion = version.replace(/^\d+\.\s*/, '');
+                            html += `<div class="result-card"><h4>Version ${index + 1}</h4><p>${cleanVersion}</p></div>`;
                         });
-                        resultWrapper.innerHTML = html;
+                        resultCardsContainer.innerHTML = html;
                     } else {
-                        resultWrapper.innerHTML = '<p class="error">The AI returned an empty response.</p>';
+                        resultCardsContainer.innerHTML = '<p class="error">The AI returned an empty response.</p>';
                     }
 
                 } catch (error) {
                     console.error('Error calling generate function:', error);
-                    resultWrapper.innerHTML = `<p class="error">An error occurred: ${error.message}</p>`;
+                    resultCardsContainer.innerHTML = `<p class="error">An error occurred: ${error.message}</p>`;
                 } finally {
+                    // --- Hide loader and re-enable button ---
+                    loader.style.display = 'none';
                     generateBtn.disabled = false;
                     generateBtn.innerText = originalButtonText;
                 }
