@@ -1,1 +1,177 @@
-/* Add styles here */
+
+/* --- Google Fonts Import --- */
+@import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap');
+
+/* --- CSS Variables (Color Palette) --- */
+:root {
+    --primary-color: #6a5acd; /* SlateBlue */
+    --secondary-color: #4CAF50; /* Green */
+    --background-color: #f0f2f5;
+    --surface-color: #ffffff;
+    --text-color: #333333;
+    --subtle-text-color: #666666;
+    --border-color: #e0e0e0;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --noise-texture: url('data:image/svg+xml,...'); /* Placeholder */
+}
+
+/* --- Base Styles --- */
+body {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 24px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Applying subtle noise texture */
+    background-image: var(--noise-texture);
+}
+
+.container {
+    max-width: 720px;
+    margin: 40px auto;
+    background-color: var(--surface-color);
+    padding: 32px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px var(--shadow-color);
+    transition: all 0.3s ease-in-out;
+}
+
+/* --- Typography --- */
+h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 32px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 8px;
+}
+
+label {
+    font-weight: 600;
+    display: block;
+    margin-top: 20px;
+    font-size: 14px;
+    color: var(--subtle-text-color);
+}
+
+/* --- Form Elements --- */
+select, textarea {
+    width: 100%;
+    margin-top: 8px;
+    padding: 14px;
+    font-size: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(106, 90, 205, 0.2);
+}
+
+button {
+    width: 100%;
+    margin-top: 24px;
+    padding: 16px;
+    font-size: 18px;
+    font-weight: 600;
+    background: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    box-shadow: 0 4px 15px rgba(106, 90, 205, 0.3);
+}
+
+button:hover {
+    background-color: #5a4acd;
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+.copy-btn {
+    background-color: var(--secondary-color);
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+    margin-top: 12px;
+}
+
+.copy-btn:hover {
+    background-color: #45a049;
+}
+
+/* --- Result & History Section --- */
+.result-section {
+    margin-top: 32px;
+}
+
+#result {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px dashed var(--border-color);
+    border-radius: 8px;
+    white-space: pre-wrap;
+    line-height: 1.7;
+    font-size: 16px;
+    min-height: 100px;
+    position: relative;
+}
+
+#history-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 8px;
+}
+
+.history-item {
+    background: #f1f1f1;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.2s, background-color 0.2s;
+}
+
+.history-item:hover {
+    background-color: #e0e0e0;
+    opacity: 1;
+}
+
+/* --- Loader --- */
+.loader {
+    border: 4px solid #f3f3f3; /* Light grey */
+    border-top: 4px solid var(--primary-color); /* Blue */
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -20px;
+    margin-left: -20px;
+    display: none; /* Hidden by default */
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+

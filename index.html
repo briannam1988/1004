@@ -3,141 +3,158 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI 상황별 문구 생성기 | 업무·일상 메시지 예문</title>
+    <title>AI 상황별 문구 생성기 | 세련된 업무·일상 메시지 작성</title>
 
     <!-- SEO -->
-    <meta name="description" content="상황별로 바로 써먹는 AI 문구 생성기. 사과, 요청, 보고, 거절 등 업무·일상 메시지 예문을 즉시 생성합니다." />
-    <meta name="keywords" content="문구 생성기, 메시지 예문, 업무 이메일, 사과 메시지, AI 문구" />
+    <meta name="description" content="사용자 유지율을 높이기 위해 새롭게 디자인된 AI 문구 생성기. 로딩 상태, 생성 기록 등 UX가 개선되었습니다." />
+    <meta name="keywords" content="문구 생성기, 메시지 예문, 업무 이메일, AI 문구, UX, 사용자 유지율" />
 
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: #f7f7f7;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 720px;
-            margin: auto;
-            background: #fff;
-            padding: 24px;
-            border-radius: 8px;
-        }
-        h1 {
-            font-size: 24px;
-            margin-bottom: 16px;
-        }
-        label {
-            font-weight: 600;
-            display: block;
-            margin-top: 16px;
-        }
-        select, textarea, button {
-            width: 100%;
-            margin-top: 8px;
-            padding: 12px;
-            font-size: 14px;
-        }
-        button {
-            background: #000;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-        .result {
-            margin-top: 24px;
-            padding: 16px;
-            background: #f1f1f1;
-            border-radius: 6px;
-            white-space: pre-wrap;
-        }
-        .description {
-            margin-top: 32px;
-            font-size: 14px;
-            color: #444;
-            line-height: 1.6;
-        }
-        .copy-btn {
-            margin-top: 10px;
-            background: #444;
-        }
-    </style>
+    <!-- Google Adsense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8164071407412804"
+     crossorigin="anonymous"></script>
+
+    <!-- External Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+
 </head>
 <body>
 
 <div class="container">
-    <h1>AI 상황별 문구 생성기</h1>
+    <h1>AI 상황별 문구 생성기 ✨</h1>
 
-    <label for="situation">상황 선택</label>
+    <label for="situation">어떤 상황인가요?</label>
     <select id="situation">
-        <option value="apology">사과 메시지</option>
-        <option value="request">요청 메시지</option>
-        <option value="report">업무 보고</option>
-        <option value="rejection">정중한 거절</option>
+        <option value="apology">사과</option>
+        <option value="request">요청</option>
+        <option value="report">보고</option>
+        <option value="rejection">거절</option>
     </select>
 
-    <label for="tone">톤 선택</label>
+    <label for="tone">어떤 톤으로 말할까요?</label>
     <select id="tone">
         <option value="polite">정중하게</option>
         <option value="casual">부드럽게</option>
         <option value="direct">간결하게</option>
     </select>
 
-    <label for="detail">상황 설명 (선택)</label>
-    <textarea id="detail" rows="4" placeholder="예: 마감 지연에 대해 상사에게 사과해야 합니다."></textarea>
+    <label for="detail">추가 정보 (선택)</label>
+    <textarea id="detail" rows="4" placeholder="예: 회의에 10분 정도 늦을 것 같습니다."></textarea>
 
-    <button onclick="generateText()">문구 생성하기</button>
+    <button id="generateBtn" onclick="generateText()">🚀 문구 생성하기</button>
 
-    <div id="result" class="result" style="display:none;"></div>
-    <button id="copyBtn" class="copy-btn" style="display:none;" onclick="copyText()">복사하기</button>
-
-    <div class="description">
-        <h2>이 문구 생성기는 언제 쓰나요?</h2>
-        <p>
-            업무 중 갑작스럽게 사과, 요청, 보고, 거절 메시지를 보내야 할 때
-            문장을 어떻게 시작해야 할지 막막한 경우가 많습니다.
-            이 도구는 상황과 톤을 선택하면 바로 사용할 수 있는 예문을 제공합니다.
-        </p>
-        <p>
-            생성된 문구는 이메일, 메신저, 업무 툴 어디든 바로 복사해 사용할 수 있습니다.
-        </p>
+    <div class="result-section">
+        <h2>생성된 문구</h2>
+        <div id="result">
+            <div class="loader"></div>
+            <p id="result-text"></p>
+        </div>
+        <button id="copyBtn" class="copy-btn" style="display:none;" onclick="copyText()">복사하기</button>
     </div>
+
+    <div class="history-section">
+        <h2>최근 생성 기록</h2>
+        <ul id="history-list">
+            <!-- History items will be injected here by JavaScript -->
+        </ul>
+    </div>
+
 </div>
 
 <script>
+const generateBtn = document.getElementById('generateBtn');
+const resultText = document.getElementById('result-text');
+const resultContainer = document.getElementById('result');
+const loader = document.querySelector('.loader');
+const copyBtn = document.getElementById('copyBtn');
+const historyList = document.getElementById('history-list');
+
+// Load history from localStorage on page load
+document.addEventListener('DOMContentLoaded', () => {
+    loadHistory();
+});
+
 function generateText() {
     const situation = document.getElementById("situation").value;
     const tone = document.getElementById("tone").value;
     const detail = document.getElementById("detail").value;
 
-    // 👉 여기서 나중에 AI API 연동
-    // fetch("/api/generate", { ... })
+    // --- UI Update: Show Loader ---
+    resultText.innerText = "";
+    loader.style.display = 'block';
+    copyBtn.style.display = 'none';
+    generateBtn.disabled = true;
+    generateBtn.innerText = '생성 중...';
 
-    // 임시 더미 데이터 (애드센스 승인용)
-    let text = "";
+    // --- AI Simulation with setTimeout ---
+    setTimeout(() => {
+        let text = "";
+        // Dummy logic, will be replaced by actual AI API call
+        if (situation === "apology") {
+            text = `정말 죄송합니다. ${detail || '예상치 못한 이슈로 불편을 드렸습니다.'} 다음부터는 이런 일이 없도록 더욱 주의하겠습니다.`;
+        } else if (situation === "request") {
+            text = `안녕하세요. ${detail || '도움이 필요한 부분이 있어'} 정중히 요청드립니다. 혹시 가능하실까요?`;
+        } else if (situation === "report") {
+            text = `[업무 보고] ${detail || '요청하신 건에 대한 진행 상황'} 공유드립니다. 확인 부탁드립니다.`;
+        } else if (situation === "rejection") {
+            text = `제안 주셔서 정말 감사합니다. 다만, ${detail || '내부 사정으로 인해'} 이번에는 아쉽게도 함께하기 어려울 것 같습니다.`;
+        }
 
-    if (situation === "apology") {
-        text = "불편을 드려 죄송합니다.\n해당 건에 대해 확인 후 빠르게 조치하겠습니다.";
-    } else if (situation === "request") {
-        text = "번거로우시겠지만 확인 부탁드립니다.\n가능하신 일정 알려주시면 감사하겠습니다.";
-    } else if (situation === "report") {
-        text = "현재 진행 상황 공유드립니다.\n관련 내용은 아래와 같습니다.";
-    } else if (situation === "rejection") {
-        text = "말씀 주신 제안에 감사드립니다.\n다만 이번에는 진행이 어려울 것 같습니다.";
-    }
+        // --- UI Update: Show Result ---
+        resultText.innerText = text;
+        loader.style.display = 'none';
+        copyBtn.style.display = 'block';
+        generateBtn.disabled = false;
+        generateBtn.innerText = '🚀 문구 생성하기';
+        
+        // --- Save to History ---
+        saveToHistory(text);
 
-    document.getElementById("result").innerText = text;
-    document.getElementById("result").style.display = "block";
-    document.getElementById("copyBtn").style.display = "block";
+    }, 1200); // Simulating network delay
 }
 
 function copyText() {
-    const text = document.getElementById("result").innerText;
-    navigator.clipboard.writeText(text);
-    alert("문구가 복사되었습니다.");
+    const text = resultText.innerText;
+    if (text) {
+        navigator.clipboard.writeText(text);
+        alert("문구가 클립보드에 복사되었습니다.");
+    }
+}
+
+function saveToHistory(text) {
+    if (!text) return;
+
+    let history = JSON.parse(localStorage.getItem('generationHistory')) || [];
+
+    // Add new item to the top, avoid duplicates
+    history = history.filter(item => item !== text); // Remove existing
+    history.unshift(text); // Add to the front
+
+    // Keep only the last 5 items
+    if (history.length > 5) {
+        history.pop();
+    }
+
+    localStorage.setItem('generationHistory', JSON.stringify(history));
+    loadHistory();
+}
+
+function loadHistory() {
+    historyList.innerHTML = '';
+    const history = JSON.parse(localStorage.getItem('generationHistory')) || [];
+
+    history.forEach(text => {
+        const li = document.createElement('li');
+        li.className = 'history-item';
+        li.innerText = text.length > 50 ? text.substring(0, 50) + '...' : text;
+        li.onclick = () => {
+            resultText.innerText = text;
+            copyBtn.style.display = 'block';
+            window.scrollTo(0, 0);
+        };
+        historyList.appendChild(li);
+    });
 }
 </script>
-<!-- Re-deploying to Cloudflare Pages -->
+
 </body>
 </html>
