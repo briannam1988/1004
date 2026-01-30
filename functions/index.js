@@ -1,5 +1,6 @@
 const functions = require("firebase-functions");
 const { VertexAI } = require('@google-cloud/vertexai');
+const cors = require('cors');
 
 // Initialize Vertex AI & Model
 const vertex_ai = new VertexAI({ project: 'project-1004-34292892-da8ed', location: 'us-central1' });
@@ -14,10 +15,17 @@ const generativeModel = vertex_ai.preview.getGenerativeModel({
     },
 });
 
+// --- CORS Configuration for public access ---
+const corsHandler = cors({
+    origin: "https://2f8d8596.1004-3pn.pages.dev", 
+    methods: "POST", 
+    allowedHeaders: "Content-Type" 
+});
+
 // --- Reusable Function for AI Generation ---
 async function performAITask(prompt, systemInstruction) {
     if (!prompt) {
-        throw new functions.https.HttpsError('invalid-argument', 'A prompt is required for this function.');
+        throw new Error('A prompt is required for this function.');
     }
     try {
         const req = {
@@ -34,21 +42,18 @@ async function performAITask(prompt, systemInstruction) {
         return { result: text };
     } catch (error) {
         console.error("Error during AI content generation:", error);
-        throw new functions.https.HttpsError('internal', `Failed to perform AI task. Reason: ${error.message}`);
+        throw new Error(`Failed to perform AI task. Reason: ${error.message}`);
     }
 }
 
-// --- Cloud Function Exports ---
-
-// Generate Marketing Phrases
-exports.generate = functions.https.onCall((data, context) => {
+// --- Main AI Generation Logic ---
+const generateLogic = async (data) => {
     const { situation, target, length, tone, detail, lang } = data;
 
     if (!detail) {
         throw new functions.https.HttpsError('invalid-argument', 'The "detail" field is required.');
     }
 
-    // Construct a detailed prompt for the AI based on the structured data
     const langInstruction = lang === 'ko' ? 'Korean' : 'English';
     const prompt = `
         Please generate 3 distinct marketing phrases based on the following criteria.
@@ -64,9 +69,37 @@ exports.generate = functions.https.onCall((data, context) => {
 
     const systemInstruction = "You are an expert copywriter. Generate 3 distinct and compelling marketing phrases based on the user's detailed request. Each phrase must be on a new line, and only output the phrases.";
     
-    return performAITask(prompt, systemInstruction);
+    return await performAITask(prompt, systemInstruction);
+}
+
+
+// --- Cloud Function Exports ---
+
+// [Kept for Firebase SDK users] Generate Marketing Phrases via onCall
+exports.generate = functions.https.onCall(generateLogic);
+
+// [NEW Public Endpoint] Generate Marketing Phrases via onRequest for Cloudflare
+exports.generatePublic = functions.https.onRequest((req, res) => {
+    corsHandler(req, res, async () => {
+        if (req.method !== 'POST') {
+            return res.status(405).send('Method Not Allowed');
+        }
+        try {
+            const result = await generateLogic(req.body);
+            res.status(200).json(result);
+        } catch (error) {
+            console.error("Public generation error:", error);
+            if (error instanceof functions.https.HttpsError) {
+                res.status(error.httpErrorCode.status).send(error.message);
+            } else {
+                res.status(500).send('Internal Server Error');
+            }
+        }
+    });
 });
 
+
+// --- Other Functions (Kept as onCall) ---
 // Analyze a Decision
 exports.analyzeDecision = functions.https.onCall((data, context) => {
     const systemInstruction = "You are a logical analyst. Provide a balanced analysis of the pros and cons.";
