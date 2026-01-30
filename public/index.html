@@ -77,7 +77,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Initialize Firebase
+            // Initialize Firebase Functions
             const functions = firebase.functions();
 
             // --- Element References ---
@@ -105,14 +105,19 @@
                 resultBox.classList.remove('error');
 
                 try {
+                    // Get a reference to the callable function
                     const callable = functions.httpsCallable(functionName);
+                    
+                    // Call the function with the prompt data
                     const response = await callable({ prompt: promptValue });
                     
+                    // The result from the function is in response.data
                     const resultText = response.data.result || 'No response text received.';
                     resultBox.innerHTML = `<p>${resultText}</p>`;
 
                 } catch (error) {
                     console.error(`Error calling function ${functionName}:`, error);
+                    // Display a user-friendly error message
                     resultBox.innerHTML = `<p class="error">Error: ${error.message}</p>`;
                 } finally {
                     resultBox.classList.remove('loading');
