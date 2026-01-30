@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-KNDXMHOVS4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-KNDXMHOVS4');
+</script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AI 비교/판단 도우미 | AI 유틸리티 플랫폼</title>
@@ -76,45 +85,6 @@
         analyzeBtn.disabled = true;
         analyzeBtn.innerText = 'AI가 분석하는 중...';
 
-        // --- 임시 목업(Mockup) 데이터 ---
-        // 백엔드 개발 전, UI를 확인하기 위한 임시 데이터입니다.
-        const mockData = {
-            recommendation: "아이폰 15 프로",
-            summary: "사진 촬영과 게임 성능을 중시하는 사용자님께는 '아이폰 15 프로'가 더 적합할 것으로 보입니다.",
-            scores: {
-                optionA: { name: "아이폰 15 프로", score: 85 },
-                optionB: { name: "갤럭시 S24 울트라", score: 78 }
-            },
-            comparison: [
-                {
-                    criteria: "장점 (Pros)",
-                    optionA: "뛰어난 AP 성능과 최적화, 강력한 비디오 촬영 기능, 직관적인 iOS 생태계",
-                    optionB: "S펜을 활용한 생산성, 10배 광학 줌을 포함한 다재다능한 카메라, 뛰어난 디스플레이 품질"
-                },
-                {
-                    criteria: "단점 (Cons)",
-                    optionA: "제한적인 파일 관리, 상대적으로 느린 충전 속도, 높은 가격",
-                    optionB: "일부 앱에서의 최적화 문제, GOS 논란, 상대적으로 낮은 중고가 방어"
-                },
-                {
-                    criteria: "핵심 고려사항",
-                    optionA: "게임 및 영상 작업을 주로 한다면 최고의 선택",
-                    optionB: "다양한 기능과 커스터마이징을 원한다면 만족도가 높음"
-                }
-            ],
-            reasoning: "사용자님께서 제시해주신 '사진 촬영'과 '모바일 게임'이라는 두 가지 핵심 기준에 따라 분석한 결과, 아이폰 15 프로의 A17 Pro 칩은 현존 최고의 모바일 게이밍 성능을 제공합니다. 또한, ProRes 동영상 녹화와 같은 전문적인 비디오 기능은 갤럭시가 따라오기 힘든 강점입니다. 사진의 경우, 갤럭시의 줌 기능은 뛰어나지만, 일상적인 스냅 사진과 인물 사진의 색감 및 품질 면에서는 아이폰이 꾸준히 좋은 평가를 받고 있습니다. 따라서 종합적인 사용 경험을 고려했을 때, 아이폰 15 프로를 85점, 갤럭시 S24 울트라를 78점으로 평가하며 아이폰을 더 추천합니다."
-        };
-        
-        // 임시로 2초 후 결과를 보여줍니다.
-        setTimeout(() => {
-            renderDecisionResult(mockData);
-            loader.style.display = 'none';
-            analyzeBtn.disabled = false;
-            analyzeBtn.innerText = '🤖 AI 분석 요청하기';
-        }, 2000);
-
-        // 추후 실제 API 호출 로직으로 대체될 부분입니다.
-        /*
         try {
             const response = await fetch('/analyze-decision', {
                 method: 'POST',
@@ -122,23 +92,31 @@
                 body: JSON.stringify({ optionA, optionB, context })
             });
 
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+            }
             
             const data = await response.json();
             renderDecisionResult(data);
 
         } catch (error) {
             console.error("API 호출 오류:", error);
-            decisionResult.innerHTML = `<p class="error-message">분석에 실패했습니다. 잠시 후 다시 시도해주세요.</p>`;
+            decisionResult.innerHTML = `<p class="error-message">분석에 실패했습니다: ${error.message}</p>`;
         } finally {
             loader.style.display = 'none';
             analyzeBtn.disabled = false;
             analyzeBtn.innerText = '🤖 AI 분석 요청하기';
         }
-        */
     }
 
     function renderDecisionResult(data) {
+        // 데이터가 없거나, scores 객체가 없는 경우를 대비한 방어 코드
+        if (!data || !data.scores) {
+            decisionResult.innerHTML = `<p class="error-message">AI로부터 유효한 분석 결과를 받지 못했습니다.</p>`;
+            return;
+        }
+
         let tableRows = '';
         data.comparison.forEach(item => {
             tableRows += `
