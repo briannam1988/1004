@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Google Site Verification -->
-    <meta name="google-site-verification" content="ExGvmODmDOfGIKBLlQ1nOjleAmwF2SmEZmzS53-_L6U" />
+    <meta name="google-site-verification" content="ORWCt-JA4PPTFcb_b7FWudnRN0X9DlUPw3aJlCoSsZU" />
 
     <!-- 1. SEO 최적화 -->
     <title>AI 문구 생성기 | 보고서, 사과 문자, 요청 메일 작성 도우미</title>
@@ -138,7 +138,7 @@ async function generateText() {
         const data = await response.json();
         const text = data.generatedText;
 
-        // --- UI Update: Show Result ---
+        // --- UI Update: Show Result ---\
         resultText.innerText = text;
         copyBtn.style.display = 'block';
         saveToHistory(text);
