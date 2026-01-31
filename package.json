@@ -9,14 +9,14 @@
   "keywords": [
     "ai",
     "text generation",
-    "cloudflare"
+    "firebase"
   ],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@cloudflare/ai": "^1.2.2",
     "@google/generative-ai": "^0.24.1",
-    "base64-js": "^1.5.1"
+    "express": "^4.19.2",
+    "cors": "^2.8.5"
   },
   "devDependencies": {
     "wrangler": "^3.114.17"
