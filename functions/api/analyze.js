@@ -3,7 +3,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export async function onRequestPost({ request, env }) {
   try {
-    // Initialize the Generative AI model with the API key
+    // Initialize the Generative AI model with the API key and the CORRECT model name
     const genAI = new GoogleGenerativeAI(env.GEMINI_API_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
@@ -18,7 +18,7 @@ export async function onRequestPost({ request, env }) {
       });
     }
 
-    // Construct a clear prompt for the AI by correctly joining the arrays
+    // Construct a clear prompt for the AI
     const prompt = `Based on the following pros and cons, provide a balanced analysis and recommendation. 
 
 Pros:
