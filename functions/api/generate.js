@@ -1,32 +1,24 @@
 
-import { GoogleGenerativeAI } from "@google/generative-ai";
+// Test function to check if the Cloudflare environment is working correctly.
 
 export async function onRequestPost({ request, env }) {
   try {
-    const genAI = new GoogleGenerativeAI(env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-
+    // We are not using the AI SDK for this test.
+    // Just get the prompt to simulate reading the request.
     const reqBody = await request.json();
     const prompt = reqBody.prompt;
 
-    if (!prompt) {
-      return new Response(JSON.stringify({ error: "Prompt is required" }), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
+    const testResponse = `This is a test response. The function is working. You sent: ${prompt}`;
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = await response.text();
-
-    return new Response(JSON.stringify({ generatedText: text }), {
+    // Return a simple success JSON response.
+    return new Response(JSON.stringify({ generatedText: testResponse }), {
       headers: { "Content-Type": "application/json" },
     });
+
   } catch (error) {
-    console.error("Error processing request:", error);
-    // Return the actual error message for debugging
-    return new Response(JSON.stringify({ error: error.message || "Internal Server Error" }), {
+    // If even this simple function fails, we return the error.
+    console.error("Simple test function failed:", error);
+    return new Response(JSON.stringify({ error: error.message || "Simple test function failed" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });
