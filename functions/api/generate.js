@@ -5,7 +5,8 @@ export async function onRequestPost({ request, env }) {
   try {
     // Initialize the Generative AI model with the API key from environment variables
     const genAI = new GoogleGenerativeAI(env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    // Use the latest, stable model name
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
 
     const reqBody = await request.json();
     const prompt = reqBody.prompt;
