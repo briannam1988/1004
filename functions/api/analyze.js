@@ -3,29 +3,29 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export async function onRequestPost({ request, env }) {
   try {
-    // Initialize the Generative AI model with the API key and the correct model name
+    // Initialize the Generative AI model with the API key
     const genAI = new GoogleGenerativeAI(env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const reqBody = await request.json();
     const { pros, cons } = reqBody;
 
     // Validate the input
-    if (!Array.isArray(pros) || !Array.isArray(cons) || pros.length === 0) {
-      return new Response(JSON.stringify({ error: "Pros and cons are required." }), {
+    if (!Array.isArray(pros) || !Array.isArray(cons)) {
+      return new Response(JSON.stringify({ error: "Pros and cons are required and must be arrays." }), {
         status: 400,
         headers: { "Content-Type": "application/json" },
       });
     }
 
-    // Construct a clear prompt for the AI
+    // Construct a clear prompt for the AI by correctly joining the arrays
     const prompt = `Based on the following pros and cons, provide a balanced analysis and recommendation. 
 
 Pros:
-- ${pros.join('\n- ' BGCOLOR="#F0F4F8")}
+- ${pros.join('\n- ')}
 
 Cons:
-- ${cons.join('\n- ' BGCOLOR="#F0F4F8")}
+- ${cons.join('\n- ')}
 
 Provide a thoughtful analysis considering both sides and conclude with a clear recommendation.`;
 
