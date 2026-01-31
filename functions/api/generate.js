@@ -25,7 +25,8 @@ export async function onRequestPost({ request, env }) {
     });
   } catch (error) {
     console.error("Error processing request:", error);
-    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+    // Return the actual error message for debugging
+    return new Response(JSON.stringify({ error: error.message || "Internal Server Error" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });
