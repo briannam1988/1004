@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadTranslations(initialLang);
     // --- 다국어 지원 기능 끝 ---
 
-    // --- AI 문구 생성기 로직 ---
+    // --- AI 문구 생성기 로직 (통합 API 사용) ---
     if (generateBtn) {
         generateBtn.addEventListener('click', async () => {
             const situation = document.getElementById('situation').value;
@@ -63,19 +63,22 @@ document.addEventListener('DOMContentLoaded', () => {
             const tone = document.getElementById('tone').value;
             const detail = document.getElementById('detail').value;
 
-            const prompt = `Create 3 distinct versions of a text for the following situation, clearly labeled as "Version 1:", "Version 2:", and "Version 3:".\n- Situation: ${situation}\n- Target Audience: ${target}\n- Desired Length: ${length}\n- Tone: ${tone}\n- Additional Details: ${detail}`;
+            // The backend now handles the complex prompt construction.
+            // We just need to send the core idea.
+            const prompt = `Situation: ${situation}, Target: ${target}, Length: ${length}, Tone: ${tone}, Details: ${detail}`;
 
             loader.style.display = 'block';
             resultWrapper.style.display = 'block';
             resultContainer.innerHTML = '';
 
             try {
-                const response = await fetch('/api/generate', {
+                const response = await fetch('/api/gemini', { // Use the unified endpoint
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ prompt: prompt }),
+                    // Specify the type and send the prompt
+                    body: JSON.stringify({ type: 'generate', prompt: prompt }),
                 });
 
                 const data = await response.json();
@@ -85,9 +88,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     throw new Error(data.error || `HTTP error! status: ${response.status}`);
                 }
 
-                if (data.generatedText && typeof data.generatedText === 'string') {
-                    // 수정된 파싱 로직: "Version X:"를 기준으로 나누고, 첫 번째 빈 요소를 제거
-                    const versions = data.generatedText.split(/Version [0-9]+:/).slice(1).map(v => v.trim());
+                // Use 'data.result' and split by newline as per the new backend contract
+                if (data.result && typeof data.result === 'string') {
+                    const versions = data.result.split('\n').filter(v => v.trim() !== '');
 
                     if (versions.length > 0) {
                         versions.forEach((version, index) => {
@@ -100,10 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             resultContainer.appendChild(card);
                         });
                     } else {
-                        const card = document.createElement('div');
-                        card.className = 'result-card';
-                        card.innerHTML = `<h3>Generated Text</h3><p>${data.generatedText.replace(/\n/g, '<br>')}</p>`;
-                        resultContainer.appendChild(card);
+                         throw new Error("API returned an empty result.");
                     }
 
                     const historyItem = document.createElement('li');
@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     } 
 
-    // --- 비교판단 판독기 로직 ---
+    // --- 비교판단 판독기 로직 (통합 API 사용) ---
     const analyzeBtn = document.getElementById('analyzeBtn');
     const analysisResult = document.getElementById('analysis-result');
     const analysisLoader = document.getElementById('analysis-loader');
@@ -141,22 +141,24 @@ document.addEventListener('DOMContentLoaded', () => {
             analysisResult.innerHTML = '';
 
             try {
-                const response = await fetch('/api/analyze', {
+                const response = await fetch('/api/gemini', { // Use the unified endpoint
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ pros, cons })
+                    // Specify the type and send pros/cons
+                    body: JSON.stringify({ type: 'analyze', pros, cons })
                 });
 
                 const data = await response.json();
-                 analysisLoader.style.display = 'none';
+                analysisLoader.style.display = 'none';
 
                 if (!response.ok) {
                     throw new Error(data.error || 'Analysis failed');
                 }
 
-                analysisResult.innerHTML = `<p>${data.analysis.replace(/\n/g, '<br>')}</p>`;
+                // Use 'data.result' as per the new backend contract
+                analysisResult.innerHTML = `<p>${data.result.replace(/\n/g, '<br>')}</p>`;
 
             } catch (error) {
                 analysisLoader.style.display = 'none';
