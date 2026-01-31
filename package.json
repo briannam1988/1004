@@ -15,7 +15,8 @@
   "license": "ISC",
   "dependencies": {
     "@cloudflare/ai": "^1.2.2",
-    "base64-js": "^1.5.1" 
+    "@google/generative-ai": "^0.24.1",
+    "base64-js": "^1.5.1"
   },
   "devDependencies": {
     "wrangler": "^3.114.17"
