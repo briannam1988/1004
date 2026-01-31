@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             translations[lang] = await response.json();
             updateUI(lang);
-            localStorage.setItem('preferredLanguage', lang); // 사용자가 선택한 언어 저장
+            localStorage.setItem('preferredLanguage', lang);
         } catch (error) {
             console.error(error);
         }
@@ -41,17 +41,20 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    document.getElementById('lang-ko').addEventListener('click', () => loadTranslations('ko'));
-    document.getElementById('lang-en').addEventListener('click', () => loadTranslations('en'));
+    const langKoBtn = document.getElementById('lang-ko');
+    const langEnBtn = document.getElementById('lang-en');
+    if (langKoBtn && langEnBtn) {
+        langKoBtn.addEventListener('click', () => loadTranslations('ko'));
+        langEnBtn.addEventListener('click', () => loadTranslations('en'));
+    }
 
-    // 페이지 로드 시 기본 언어 설정
     const savedLang = localStorage.getItem('preferredLanguage');
     const browserLang = navigator.language.startsWith('ko') ? 'ko' : 'en';
     const initialLang = savedLang || browserLang;
     loadTranslations(initialLang);
     // --- 다국어 지원 기능 끝 ---
 
-
+    // --- AI 문구 생성기 로직 ---
     if (generateBtn) {
         generateBtn.addEventListener('click', async () => {
             const situation = document.getElementById('situation').value;
@@ -83,7 +86,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 if (data.generatedText && typeof data.generatedText === 'string') {
-                    const versions = data.generatedText.split(/Version [0-9]+:/).map(v => v.trim()).filter(v => v);
+                    // 수정된 파싱 로직: "Version X:"를 기준으로 나누고, 첫 번째 빈 요소를 제거
+                    const versions = data.generatedText.split(/Version [0-9]+:/).slice(1).map(v => v.trim());
 
                     if (versions.length > 0) {
                         versions.forEach((version, index) => {
@@ -116,7 +120,71 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Error:', error);
             }
         });
-    } else {
-        console.error('Error: Could not find the generate button (generateBtn).');
+    } 
+
+    // --- 비교판단 판독기 로직 ---
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const analysisResult = document.getElementById('analysis-result');
+    const analysisLoader = document.getElementById('analysis-loader');
+
+    if (analyzeBtn) {
+        analyzeBtn.addEventListener('click', async () => {
+            const pros = Array.from(document.querySelectorAll('#pro-list li')).map(li => li.textContent);
+            const cons = Array.from(document.querySelectorAll('#con-list li')).map(li => li.textContent);
+
+            if (pros.length === 0 && cons.length === 0) {
+                analysisResult.innerHTML = '<p class="error">Please enter at least one pro or con.</p>';
+                return;
+            }
+
+            analysisLoader.style.display = 'block';
+            analysisResult.innerHTML = '';
+
+            try {
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ pros, cons })
+                });
+
+                const data = await response.json();
+                 analysisLoader.style.display = 'none';
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Analysis failed');
+                }
+
+                analysisResult.innerHTML = `<p>${data.analysis.replace(/\n/g, '<br>')}</p>`;
+
+            } catch (error) {
+                analysisLoader.style.display = 'none';
+                analysisResult.innerHTML = `<p class="error">Analysis failed: ${error.message}</p>`;
+            }
+        });
+
+        // 장점/단점 추가 로직
+        const proInput = document.getElementById('pro-input');
+        const conInput = document.getElementById('con-input');
+        const addProBtn = document.getElementById('add-pro-btn');
+        const addConBtn = document.getElementById('add-con-btn');
+        const proList = document.getElementById('pro-list');
+        const conList = document.getElementById('con-list');
+
+        const addItem = (list, input) => {
+            const text = input.value.trim();
+            if (text) {
+                const li = document.createElement('li');
+                li.textContent = text;
+                list.appendChild(li);
+                input.value = '';
+            }
+        };
+
+        addProBtn.addEventListener('click', () => addItem(proList, proInput));
+        addConBtn.addEventListener('click', () => addItem(conList, conInput));
+        proInput.addEventListener('keypress', (e) => e.key === 'Enter' && addItem(proList, proInput));
+        conInput.addEventListener('keypress', (e) => e.key === 'Enter' && addItem(conList, conInput));
     }
 });
