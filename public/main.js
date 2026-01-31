@@ -1,58 +1,58 @@
+
 document.addEventListener('DOMContentLoaded', () => {
+    const generateButton = document.getElementById('generate-btn');
+    const promptInput = document.getElementById('phrase-prompt');
+    const resultDiv = document.getElementById('phrase-result');
 
-    // Initialize Firebase
-    const functions = firebase.functions();
+    // The full, absolute URL of the deployed Cloud Function.
+    // This is the proxy that will safely call the Gemini API.
+    const CLOUD_FUNCTION_URL = "https://us-central1-project-1004-34292892-da8ed.cloudfunctions.net/geminiProxy";
 
-    // --- Element References ---
-    const generateBtn = document.getElementById('generate-btn');
-    const phrasePrompt = document.getElementById('phrase-prompt');
-    const phraseResult = document.getElementById('phrase-result');
-
-    const calculateBtn = document.getElementById('calculate-btn');
-    const calcPrompt = document.getElementById('calc-prompt');
-    const calcResult = document.getElementById('calc-result');
-
-    const analyzeBtn = document.getElementById('analyze-btn');
-    const decisionPrompt = document.getElementById('decision-prompt');
-    const decisionResult = document.getElementById('decision-result');
-
-    // --- Helper Function for Firebase Cloud Function Calls ---
-    async function callFunction(functionName, prompt, resultBox) {
-        if (!prompt) {
-            resultBox.innerHTML = '<p class="error">Please enter a prompt first.</p>';
+    generateButton.addEventListener('click', async () => {
+        const userPrompt = promptInput.value;
+        if (!userPrompt) {
+            resultDiv.textContent = "Please enter a prompt.";
             return;
         }
 
-        resultBox.innerHTML = '<p>Thinking...</p>';
-        resultBox.classList.add('loading');
-        resultBox.classList.remove('error');
+        resultDiv.textContent = "Generating...";
+        resultDiv.classList.remove('error');
 
         try {
-            const callable = functions.httpsCallable(functionName);
-            const response = await callable({ prompt: prompt });
+            // Construct the request body in the exact format the Gemini API requires.
+            const requestBody = {
+                contents: [{
+                    parts: [{
+                        text: userPrompt
+                    }]
+                }]
+            };
+
+            const response = await fetch(CLOUD_FUNCTION_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestBody)
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                // Display error message from the proxy function or Gemini API.
+                const errorMsg = data.error || 'An unknown API error occurred.';
+                const errorDetails = data.details ? JSON.stringify(data.details, null, 2) : '';
+                throw new Error(`${errorMsg}\n${errorDetails}`);
+            }
             
-            const resultText = response.data || 'No response text received.';
-            resultBox.innerHTML = `<p>${resultText}</p>`;
+            // Extract the generated text from the successful Gemini API response.
+            const generatedText = data.candidates[0].content.parts[0].text;
+            resultDiv.textContent = generatedText.replace(/\n/g, '<br>');
 
         } catch (error) {
-            console.error(`Error calling function ${functionName}:`, error);
-            resultBox.innerHTML = `<p class="error">Error: ${error.message}</p>`;
-        } finally {
-            resultBox.classList.remove('loading');
+            console.error("Fetch failed:", error);
+            resultDiv.textContent = `Error: ${error.message}`;
+            resultDiv.classList.add('error');
         }
-    }
-
-    // --- Event Listeners ---
-    generateBtn.addEventListener('click', () => {
-        callFunction('generate', phrasePrompt.value, phraseResult);
     });
-
-    calculateBtn.addEventListener('click', () => {
-        callFunction('calculate', calcPrompt.value, calcResult);
-    });
-
-    analyzeBtn.addEventListener('click', () => {
-        callFunction('analyzeDecision', decisionPrompt.value, decisionResult);
-    });
-
 });

@@ -1,3 +1,9 @@
-firebase-debug.log
-.env
-node_modules/
+# Firebase Emulator and Cache
+.firebase/hosting.*.cache
+*.log
+
+# Firebase Environment Variables
+functions/.env.*
+
+# Node.js Dependencies
+functions/node_modules

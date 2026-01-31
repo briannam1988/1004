@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-KNDXMH0VS4"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-KNDXMH0VS4');
-</script>
+    <!-- Full functionality restored with the correct payload structure -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KNDXMH0VS4"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-KNDXMH0VS4');
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title data-translate-key="writer_title">AI Text Generator | AI Utility Platform</title>
@@ -25,7 +24,7 @@
             <li><a href="/decision-helper.html" data-translate-key="nav_decision_helper"></a></li>
             <li><a href="/calculator.html" data-translate-key="nav_calculator"></a></li>
         </ul>
-        <!-- Language switcher will be injected here by i18n.js -->
+        <div id="language-switcher-container"></div>
     </div>
 </nav>
 
@@ -33,7 +32,7 @@
     <div class="header">
         <h1>
             <span data-translate-key="writer_title"></span>
-            <span class="version-badge">v2.0</span>
+            <span class="version-badge">v2.1</span>
         </h1>
         <p class="subtitle" data-translate-key="writer_subtitle"></p>
     </div>
@@ -86,7 +85,7 @@
     <div id="result-wrapper" style="display: none; margin-top: 30px;">
         <div id="loader" style="display: none;">
             <div class="loader-inner"></div>
-            <p data-translate-key="loading_text">AI is creating suggestions based on your input...</p>
+            <p data-translate-key="loading_text"></p>
         </div>
         <div class="result-section">
             <h2 data-translate-key="result_title"></h2>
@@ -108,103 +107,163 @@
     const resultWrapper = document.getElementById('result-wrapper');
     const resultCardsContainer = document.getElementById('result-cards-container');
     const historyList = document.getElementById('history-list');
-
-    const situationSelect = document.getElementById('situation');
-    const targetSelect = document.getElementById('target');
-    const lengthSelect = document.getElementById('length');
-    const toneSelect = document.getElementById('tone');
     const detailTextarea = document.getElementById('detail');
 
-document.addEventListener('DOMContentLoaded', () => loadHistory());
+    document.addEventListener('DOMContentLoaded', () => {
+        if (typeof loadHistory === 'function') loadHistory();
+        // Ensure the language switcher is created in the right place
+        const switcherContainer = document.getElementById('language-switcher-container');
+        if (switcherContainer && typeof createLanguageSwitcher === 'function') {
+            createLanguageSwitcher(switcherContainer);
+        }
+    });
 
 async function generateText() {
-    const [situation, target, length, tone, detail] = [situationSelect.value, targetSelect.value, lengthSelect.value, toneSelect.value, detailTextarea.value];
+    const situation = document.getElementById('situation').value;
+    const target = document.getElementById('target').value;
+    const length = document.getElementById('length').value;
+    const tone = document.getElementById('tone').value;
+    let detail = detailTextarea.value.trim();
     const lang = window.currentLanguage || 'en';
-    const originalButtonText = generateBtn.innerText;
+    const originalButtonText = generateBtn.textContent;
+
+    // Failsafe: If the detail field is empty, use the placeholder as a fallback.
+    if (!detail) {
+        detail = detailTextarea.placeholder;
+    }
+
+    // *** THE FINAL, CORRECTED PAYLOAD STRUCTURE ***
+    // The function is a standard HTTPS endpoint, not a "Callable".
+    // It expects the raw JSON payload directly, NOT wrapped in a "data" object.
+    const payload = {
+        situation, target, length, tone, detail, lang
+    };
+
+    const functionUrl = 'https://us-central1-project-1004-34292892-da8ed.cloudfunctions.net/generatePublic';
 
     resultWrapper.style.display = 'block';
     loader.style.display = 'block';
     resultCardsContainer.innerHTML = '';
     generateBtn.disabled = true;
-    generateBtn.innerText = 'AI is thinking...';
+    generateBtn.textContent = (window.translations && window.translations.loading_text) || 'AI is thinking...';
 
     try {
-        const response = await fetch('/generate', {
+        const response = await fetch(functionUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ situation, target, length, tone, detail, lang })
+            body: JSON.stringify(payload) // SEND THE PAYLOAD DIRECTLY
         });
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+        // Gracefully handle both JSON and non-JSON error responses
+        const contentType = response.headers.get("content-type");
+        if (response.ok && contentType && contentType.indexOf("application/json") !== -1) {
+            const responseData = await response.json();
+            const resultText = responseData.text; // The server sends the result in the 'text' property
+            if (!resultText) {
+                throw new Error("The 'text' field was not found in the server response.");
+            }
+            const generatedTexts = resultText.split('\n').filter(v => v.trim() !== '');
+            renderResultCards(generatedTexts);
+            if (typeof saveToHistory === 'function') {
+                saveToHistory({ situation, target, length, tone, detail, result: generatedTexts });
+            }
+        } else {
+             // Handle plain text errors from the server
+            const errorText = await response.text();
+            throw new Error(errorText || `Server returned status: ${response.status}`);
         }
-
-        const data = await response.json();
-        renderResultCards(data.generatedTexts, { situation, target, length, tone, detail });
-        saveToHistory({ situation, target, length, tone, detail, result: data.generatedTexts });
 
     } catch (error) {
         console.error("API call error:", error);
-        resultCardsContainer.innerHTML = `<p class="error-message">Failed to generate text: ${error.message}</p>`;
+        // Sanitize and display the error message to avoid HTML injection
+        const errorElement = document.createElement('p');
+        errorElement.className = 'error-message';
+        errorElement.textContent = `Failed to generate text: ${error.message}`;
+        resultCardsContainer.innerHTML = '';
+        resultCardsContainer.appendChild(errorElement);
     } finally {
         loader.style.display = 'none';
         generateBtn.disabled = false;
-        generateBtn.innerText = originalButtonText;
+        generateBtn.textContent = originalButtonText;
     }
 }
 
-    function renderResultCards(texts, input) {
-        resultCardsContainer.innerHTML = (texts || []).map((text, index) => `
+    function renderResultCards(texts) {
+        resultCardsContainer.innerHTML = (texts || []).map((text, index) => {
+            const encodedText = btoa(encodeURIComponent(text));
+            return `
             <div class="result-card">
                 <div class="card-header">
                     <h3>Suggestion ${index + 1}</h3>
-                    <button class="copy-btn" onclick="copyToClipboard(this, '${btoa(encodeURIComponent(text))}')">Copy</button>
+                    <button class="copy-btn" onclick="copyToClipboard(this, '${encodedText}')">Copy</button>
                 </div>
                 <p class="card-text">${text.replace(/\n/g, '<br>')}</p>
             </div>
-        `).join('');
+        `}).join('');
     }
 
     function copyToClipboard(button, encodedText) {
-        const textToCopy = decodeURIComponent(atob(encodedText));
-        navigator.clipboard.writeText(textToCopy).then(() => {
-            button.innerText = 'Copied!';
-            setTimeout(() => { button.innerText = 'Copy'; }, 2000);
-        }, (err) => {
-            console.error('Copy failed', err);
-            alert('Failed to copy text.');
-        });
+        try {
+            const textToCopy = decodeURIComponent(atob(encodedText));
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                button.textContent = 'Copied!';
+                setTimeout(() => { button.textContent = 'Copy'; }, 2000);
+            }, (err) => {
+                console.error('Copy failed', err);
+                alert('Failed to copy text.');
+            });
+        } catch (e) {
+            console.error("Decoding error:", e);
+            alert("Could not copy text due to a decoding error.");
+        }
     }
 
     function saveToHistory(entry) {
-        let history = JSON.parse(localStorage.getItem('generationHistory')) || [];
-        history.unshift(entry); // Add to the beginning
-        if (history.length > 5) history = history.slice(0, 5); // Keep last 5
-        localStorage.setItem('generationHistory', JSON.stringify(history));
-        loadHistory();
+        try {
+            let history = JSON.parse(localStorage.getItem('generationHistory')) || [];
+            history.unshift(entry);
+            if (history.length > 5) history = history.slice(0, 5);
+            localStorage.setItem('generationHistory', JSON.stringify(history));
+            loadHistory();
+        } catch(e) {
+            console.error("Could not save to history:", e);
+        }
     }
 
     function loadHistory() {
-        const history = JSON.parse(localStorage.getItem('generationHistory')) || [];
-        historyList.innerHTML = history.map(item => `
-            <li class="history-item" onclick='loadFromHistory(${JSON.stringify(item)})'>
-                <strong>[${item.situation}]</strong> to ${item.target} - "${item.result[0].substring(0, 30)}..."
-            </li>
-        `).join('');
+        try {
+            const history = JSON.parse(localStorage.getItem('generationHistory')) || [];
+            historyList.innerHTML = history.map(item => {
+                const resultSummary = item && item.result && item.result[0] ? item.result[0].substring(0, 30) : '...';
+                const itemString = JSON.stringify(item).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+                return `
+                    <li class="history-item" onclick="loadFromHistory('${itemString}')">
+                        <strong>[${item.situation || 'N/A'}]</strong> to ${item.target || 'N/A'} - "${resultSummary}..."
+                    </li>
+                `;
+            }).join('');
+        } catch (e) {
+            console.error("Could not load history:", e);
+            historyList.innerHTML = "<li class='error-message'>Could not load history.</li>";
+        }
     }
 
-    function loadFromHistory(item) {
-        situationSelect.value = item.situation;
-        targetSelect.value = item.target;
-        lengthSelect.value = item.length;
-        toneSelect.value = item.tone;
-        detailTextarea.value = item.detail;
-        renderResultCards(item.result, item);
-        resultWrapper.style.display = 'block';
-        window.scrollTo(0, 0);
+    function loadFromHistory(itemString) {
+        try {
+            const item = JSON.parse(itemString.replace(/&apos;/g, "'").replace(/&quot;/g, '"'));
+            document.getElementById('situation').value = item.situation;
+            document.getElementById('target').value = item.target;
+            document.getElementById('length').value = item.length;
+            document.getElementById('tone').value = item.tone;
+            detailTextarea.value = item.detail;
+            renderResultCards(item.result);
+            resultWrapper.style.display = 'block';
+            window.scrollTo(0, 0);
+        } catch (e) {
+            console.error("Could not load from history item:", e);
+            alert("Error loading this history item.");
+        }
     }
-
 </script>
 
 </body>

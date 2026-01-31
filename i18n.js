@@ -90,8 +90,12 @@ function applyTranslations() {
         const key = el.getAttribute('data-translate-key');
         if (translations[key]) {
             const translation = translations[key];
+            // For INPUT and TEXTAREA, only set the placeholder.
+            // This script should not be responsible for setting the actual input value.
             if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-                if(el.placeholder !== undefined) el.placeholder = translation;
+                if(el.placeholder !== undefined) {
+                    el.placeholder = translation;
+                }
             } else {
                 el.innerHTML = translation; // Use innerHTML to support simple tags in translations
             }
