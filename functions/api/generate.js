@@ -1,24 +1,39 @@
 
-// Test function to check if the Cloudflare environment is working correctly.
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export async function onRequestPost({ request, env }) {
   try {
-    // We are not using the AI SDK for this test.
-    // Just get the prompt to simulate reading the request.
+    // Initialize the Generative AI model with the API key from environment variables
+    const genAI = new GoogleGenerativeAI(env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+
     const reqBody = await request.json();
     const prompt = reqBody.prompt;
 
-    const testResponse = `This is a test response. The function is working. You sent: ${prompt}`;
+    // Check if the prompt is provided
+    if (!prompt) {
+      return new Response(JSON.stringify({ error: "Prompt is required" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
 
-    // Return a simple success JSON response.
-    return new Response(JSON.stringify({ generatedText: testResponse }), {
+    // Generate content with the model
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = await response.text();
+
+    // Return the generated text in the expected format
+    return new Response(JSON.stringify({ generatedText: text }), {
       headers: { "Content-Type": "application/json" },
     });
 
   } catch (error) {
-    // If even this simple function fails, we return the error.
-    console.error("Simple test function failed:", error);
-    return new Response(JSON.stringify({ error: error.message || "Simple test function failed" }), {
+    // Log the detailed error on the server
+    console.error("Error processing request:", error);
+
+    // Return a structured error message to the client
+    return new Response(JSON.stringify({ error: error.message || "An unexpected error occurred" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });
