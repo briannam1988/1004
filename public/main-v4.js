@@ -1,4 +1,3 @@
-alert('main.js 파일 로드 성공!');
 
 document.addEventListener('DOMContentLoaded', () => {
     const btn = document.getElementById('generateBtn');

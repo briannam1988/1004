@@ -1,158 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI-Powered Content Tools</title>
-    <link rel="stylesheet" href="style.css">
+    <!-- Force cache bust with new file names -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KNDXMH0VS4"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-KNDXMH0VS4');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Text Generator | AI Utility Platform</title>
+    <meta id="meta-description" name="description" content="The AI Text Generator suggests 3 versions of text for various situations, audiences, lengths, and tones." />
+    <link rel="stylesheet" href="style-v4.css">
 </head>
 <body>
 
-    <header>
-        <h1>AI-Powered Content Suite</h1>
-        <p>Generate, analyze, and calculate with the power of AI.</p>
-    </header>
+<nav class="nav-bar">
+    <div class="menu">
+        <ul class="nav-links">
+            <li><a href="/" class="active">AI Writer</a></li>
+            <li><a href="/decision-helper.html">Decision Helper</a></li>
+            <li><a href="/calculator.html">Calculator</a></li>
+        </ul>
+        <div id="language-switcher-container"></div>
+    </div>
+</nav>
 
-    <main>
-        <!-- Phrase Generation Section -->
-        <section id="phrase-generator" class="tool-section">
-            <h2><span class="icon">✨</span> AI Copy Generator</h2>
-            <p>Create compelling marketing copy for any product or service.</p>
-            <div class="input-group">
-                <label for="detail">Enter your product/service description:</label>
-                <textarea id="detail" placeholder="e.g., A new coffee shop that serves artisanal, single-origin beans."></textarea>
+<div class="container">
+    <div class="header">
+        <h1>
+            <span>AI Text Generator</span>
+            <span class="version-badge">v2.1</span>
+        </h1>
+        <p class="subtitle">This tool helps you write text for various situations. It suggests 3 versions of text for different audiences, lengths, and tones.</p>
+    </div>
 
-                <div class="flex-row">
-                    <div class="input-col">
-                        <label for="situation">Situation</label>
-                        <select id="situation">
-                            <option value="social_media">Social Media Post</option>
-                            <option value="email_newsletter">Email Newsletter</option>
-                            <option value="product_description">Product Description</option>
-                        </select>
-                    </div>
-                    <div class="input-col">
-                        <label for="target">Target Audience</label>
-                        <select id="target">
-                            <option value="general">General Audience</option>
-                            <option value="young_adults">Young Adults (18-25)</option>
-                            <option value="professionals">Professionals (30-50)</option>
-                        </select>
-                    </div>
-                </div>
-                 <div class="flex-row">
-                    <div class="input-col">
-                        <label for="length">Length</label>
-                        <select id="length">
-                            <option value="short">Short</option>
-                            <option value="medium">Medium</option>
-                            <option value="long">Long</option>
-                        </select>
-                    </div>
-                    <div class="input-col">
-                        <label for="tone">Tone</label>
-                        <select id="tone">
-                            <option value="professional">Professional</option>
-                            <option value="friendly">Friendly</option>
-                            <option value="humorous">Humorous</option>
-                        </select>
-                    </div>
-                </div>
+    <div class="form-grid">
+        <div class="form-group">
+            <label for="situation">Situation</label>
+            <select id="situation">
+                <option value="business-report">Business Report</option>
+                <option value="email-apology">Email Apology</option>
+                <option value="sns-promotion">SNS Promotion</option>
+                <option value="review-request">Review Request</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="target">Target Audience</label>
+            <select id="target">
+                <option value="team-leader">Team Leader</option>
+                <option value="client">Client</option>
+                <option value="social-media-followers">Social Media Followers</option>
+                <option value="customer">Customer</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="length">Length</label>
+            <select id="length">
+                <option value="short">Short</option>
+                <option value="medium">Medium</option>
+                <option value="long">Long</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="tone">Tone</label>
+            <select id="tone">
+                <option value="professional">Professional</option>
+                <option value="friendly">Friendly</option>
+                <option value="urgent">Urgent</option>
+                <option value="humorous">Humorous</option>
+            </select>
+        </div>
+    </div>
 
-                <button id="generate-btn">Generate 3 Phrases</button>
-            </div>
-            <div id="result-wrapper" class="result-box-container" style="display: none;">
-                <h3>AI Suggestions (3 Versions)</h3>
-                <div id="result-cards-container" class="result-box">
-                    <!-- Results will be injected here -->
-                </div>
-                <div class="loader-container">
-                    <div class="loader" style="display: none;"></div>
-                </div>
-            </div>
-        </section>
+    <div class="form-group">
+        <label for="detail">Additional Details</label>
+        <textarea id="detail" rows="4" placeholder="e.g., Please write a weekly report on the marketing campaign performance."></textarea>
+    </div>
 
-    </main>
+    <button id="generateBtn">Generate Text</button>
 
-    <footer>
-        <p>&copy; 2024 AI Content Tools. All rights reserved.</p>
-    </footer>
+    <div id="result-wrapper" style="display: none; margin-top: 30px;">
+        <div id="loader" style="display: none;">
+            <div class="loader-inner"></div>
+            <p>AI is thinking...</p>
+        </div>
+        <div class="result-section">
+            <h2>Generated Text</h2>
+            <div id="result-cards-container"></div>
+        </div>
+    </div>
+    
+    <div class="history-section">
+        <h2>History</h2>
+        <ul id="history-list"></ul>
+    </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const generateBtn = document.getElementById('generate-btn');
-            const situationSelect = document.getElementById('situation');
-            const targetSelect = document.getElementById('target');
-            const lengthSelect = document.getElementById('length');
-            const toneSelect = document.getElementById('tone');
-            const detailTextarea = document.getElementById('detail');
+</div>
 
-            const resultWrapper = document.getElementById('result-wrapper');
-            const resultCardsContainer = document.getElementById('result-cards-container');
-            const loader = document.querySelector('.loader');
-
-            const functionUrl = 'https://us-central1-project-1004-34292892-da8ed.cloudfunctions.net/generatePublic';
-
-            generateBtn.addEventListener('click', async () => {
-                const situation = situationSelect.value;
-                const target = targetSelect.value;
-                const length = lengthSelect.value;
-                const tone = toneSelect.value;
-                const detail = detailTextarea.value;
-                const lang = 'en';
-                const originalButtonText = generateBtn.innerText;
-
-                if (!detail) {
-                    alert('Please enter a description.');
-                    return;
-                }
-
-                resultWrapper.style.display = 'block';
-                loader.style.display = 'block';
-                resultCardsContainer.innerHTML = '';
-                generateBtn.disabled = true;
-                generateBtn.innerText = 'AI is thinking...';
-
-                try {
-                    const response = await fetch(functionUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ situation, target, length, tone, detail, lang })
-                    });
-
-                    if (!response.ok) {
-                        const errorText = await response.text();
-                        throw new Error(`The server responded with an error: ${errorText}`);
-                    }
-
-                    const data = await response.json();
-                    const resultText = data.result;
-
-                    if (resultText) {
-                        const versions = resultText.split('\\n').filter(v => v.trim() !== '');
-                        let html = '';
-                        versions.forEach((version, index) => {
-                            const cleanVersion = version.replace(/^\d+\.\s*/, '');
-                            html += `<div class="result-card"><h4>Version ${index + 1}</h4><p>${cleanVersion}</p></div>`;
-                        });
-                        resultCardsContainer.innerHTML = html;
-                    } else {
-                        resultCardsContainer.innerHTML = '<p class="error">The AI returned an empty response.</p>';
-                    }
-
-                } catch (error) {
-                    console.error('Error calling generate function:', error);
-                    resultCardsContainer.innerHTML = `<p class="error">An error occurred: ${error.message}</p>`;
-                } finally {
-                    loader.style.display = 'none';
-                    generateBtn.disabled = false;
-                    generateBtn.innerText = originalButtonText;
-                }
-            });
-        });
-    </script>
+<script src="main-v4.js"></script>
 
 </body>
 </html>

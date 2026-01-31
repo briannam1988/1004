@@ -1,49 +1,62 @@
-const functions = require("firebase-functions");
-const { VertexAI } = require("@google-cloud/vertexai");
 
-// Initialize the Vertex AI client
-const vertex_ai = new VertexAI({ project: process.env.GCLOUD_PROJECT, location: 'us-central1' });
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-// Instantiate the Gemini Pro model
-const model = vertex_ai.preview.getGenerativeModel({
-    model: 'gemini-pro',
-});
+// Get your API key from environment variables
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-exports.generate = functions.https.onCall(async (data, context) => {
-    // Extract parameters from the data object
-    const { situation, target, length, tone, detail, lang } = data;
+async function generateText(situation, target, length, tone, detail) {
+    try {
+        const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
-    // Construct the dynamic prompt for the AI
-    const prompt = `
-        You are a professional copywriter. Generate 3 distinct versions of a message based on the following criteria. Each version should be in a separate JSON object with a 'title' and 'content' field. Return a single JSON array containing these three objects.
+        const prompt = `
+        Generate 3 distinct versions of a message for the following scenario:
 
-        **Language:** ${lang}
         **Situation:** ${situation}
         **Target Audience:** ${target}
-        **Desired Length:** ${length}
-        **Tone of Voice:** ${tone}
+        **Length:** ${length}
+        **Tone:** ${tone}
         **Additional Details:** ${detail}
 
-        Analyze the user's request and generate three compelling and relevant message options. Ensure the output is a valid JSON array.
-    `;
+        Present the results as three distinct options, clearly labeled (e.g., "Option 1", "Option 2", "Option 3").
+        For each option, provide a title and the generated text.
+        `;
 
-    try {
-        // Send the prompt to the model
-        const resp = await model.generateContent({ contents: [{ role: 'user', parts: [{ text: prompt }] }] });
-        
-        // Extract the raw text from the response
-        const rawText = resp.response.candidates[0].content.parts[0].text;
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = await response.text();
 
-        // The model sometimes wraps the JSON in markdown, so we need to clean it.
-        const cleanedText = rawText.replace(/\`\`\`json|\`\`\`/g, '').trim();
-        
-        // Return the cleaned, stringified JSON to the frontend
-        return { text: cleanedText };
+        // Basic parsing to format the output as HTML cards
+        return formatAsHtmlCards(text);
 
     } catch (error) {
-        // Log the full error for debugging
-        console.error("Error generating content:", error);
-        // Throw a structured error to the client
-        throw new functions.https.HttpsError('internal', 'Failed to generate content.', error);
+        console.error("Error generating text:", error);
+        // Consider how to handle this in the response
+        return `<p class="error">Error generating text. Please check the console for details.</p>`;
     }
-});
+}
+
+function formatAsHtmlCards(text) {
+    const options = text.split(/\n\n(?=Option \d+:)/).map(s => s.trim());
+    let html = '';
+
+    options.forEach(option => {
+        const lines = option.split('\n');
+        const title = lines.shift().replace('**', '').replace('**', ''); // Simple bold removal
+        const content = lines.join('\n').trim();
+
+        html += `
+            <div class="result-card">
+                <h3>${title}</h3>
+                <p>${content.replace(/\n/g, '<br>')}</p>
+                <div class="card-actions">
+                    <button class="copy-btn">Copy</button>
+                    <button class="share-btn">Share</button>
+                </div>
+            </div>
+        `;
+    });
+
+    return html;
+}
+
+module.exports = { generateText };
