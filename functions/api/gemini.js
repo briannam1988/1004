@@ -1,60 +1,26 @@
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-// This single endpoint will handle all AI-powered features.
+// [DIAGNOSTIC MODE]
+// This function is temporarily modified to bypass all AI logic and return a simple, fixed JSON response.
+// This is to test if the serverless function is deploying and responding to requests at all.
 export async function onRequestPost({ request, env }) {
   try {
-    const genAI = new GoogleGenerativeAI(env.GEMINI_API_KEY);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    // Bypassing all logic to send a test response.
+    const testResponse = {
+      result: "This is a diagnostic test response. If you see this, the server connection is working."
+    };
 
-    const reqBody = await request.json();
-    const { type, prompt, pros, cons } = reqBody;
-
-    let finalPrompt;
-
-    // Determine the final prompt based on the request type
-    switch (type) {
-      case 'generate':
-        if (!prompt) {
-          return new Response(JSON.stringify({ error: "Prompt is required for generation." }), { status: 400, headers: { 'Content-Type': 'application/json' } });
-        }
-        finalPrompt = `Generate exactly 3 creative and distinct versions of the following phrase, ensuring they are suitable for a professional website. Do not add any extra formatting, titles, or numbers. Just return the three phrases separated by a newline character (\n). Phrase: "${prompt}"`;
-        break;
-
-      case 'analyze':
-        if (!Array.isArray(pros) || !Array.isArray(cons)) {
-          return new Response(JSON.stringify({ error: "Pros and cons are required for analysis." }), { status: 400, headers: { 'Content-Type': 'application/json' } });
-        }
-        finalPrompt = `Based on the following pros and cons, provide a balanced analysis and a clear recommendation. 
-
-Pros:
-- ${pros.join('\n- ')}
-
-Cons:
-- ${cons.join('\n- ')}
-
-Provide a thoughtful analysis and conclude with a direct recommendation.`;
-        break;
-
-      default:
-        return new Response(JSON.stringify({ error: "Invalid request type specified." }), { status: 400, headers: { 'Content-Type': 'application/json' } });
-    }
-
-    // Generate content from the model
-    const result = await model.generateContent(finalPrompt);
-    const response = await result.response;
-    const text = await response.text();
-
-    // Return the response, using a generic key
-    return new Response(JSON.stringify({ result: text }), {
-      headers: { 'Content-Type': 'application/json' },
+    return new Response(JSON.stringify(testResponse), {
+      headers: { "Content-Type": "application/json" },
     });
 
   } catch (error) {
-    console.error("Error in Gemini API endpoint:", error);
-    return new Response(JSON.stringify({ error: error.message || "An unexpected error occurred." }), {
+    // Even in diagnostic mode, we'll log potential errors.
+    console.error("Error in diagnostic mode:", error);
+    return new Response(JSON.stringify({ error: "An error occurred even in diagnostic mode: " + error.message }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { "Content-Type": "application/json" },
     });
   }
 }
