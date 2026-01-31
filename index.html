@@ -11,7 +11,7 @@
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title data-translate-key="writer_title">AI Text Generator | AI Utility Platform</title>
+    <title>AI Text Generator | AI Utility Platform</title>
     <meta id="meta-description" name="description" content="The AI Text Generator suggests 3 versions of text for various situations, audiences, lengths, and tones." />
     <link rel="stylesheet" href="style.css">
 </head>
@@ -20,9 +20,9 @@
 <nav class="nav-bar">
     <div class="menu">
         <ul class="nav-links">
-            <li><a href="/" class="active" data-translate-key="nav_ai_writer"></a></li>
-            <li><a href="/decision-helper.html" data-translate-key="nav_decision_helper"></a></li>
-            <li><a href="/calculator.html" data-translate-key="nav_calculator"></a></li>
+            <li><a href="/" class="active">AI Writer</a></li>
+            <li><a href="/decision-helper.html">Decision Helper</a></li>
+            <li><a href="/calculator.html">Calculator</a></li>
         </ul>
         <div id="language-switcher-container"></div>
     </div>
@@ -31,240 +31,76 @@
 <div class="container">
     <div class="header">
         <h1>
-            <span data-translate-key="writer_title"></span>
+            <span>AI Text Generator</span>
             <span class="version-badge">v2.1</span>
         </h1>
-        <p class="subtitle" data-translate-key="writer_subtitle"></p>
+        <p class="subtitle">This tool helps you write text for various situations. It suggests 3 versions of text for different audiences, lengths, and tones.</p>
     </div>
 
     <div class="form-grid">
         <div class="form-group">
-            <label for="situation" data-translate-key="situation_label"></label>
+            <label for="situation">Situation</label>
             <select id="situation">
-                <option value="business-report" data-translate-key="situation_option_report"></option>
-                <option value="email-apology" data-translate-key="situation_option_apology"></option>
-                <option value="sns-promotion" data-translate-key="situation_option_sns"></option>
-                <option value="review-request" data-translate-key="situation_option_review"></option>
+                <option value="business-report">Business Report</option>
+                <option value="email-apology">Email Apology</option>
+                <option value="sns-promotion">SNS Promotion</option>
+                <option value="review-request">Review Request</option>
             </select>
         </div>
         <div class="form-group">
-            <label for="target" data-translate-key="target_label"></label>
+            <label for="target">Target Audience</label>
             <select id="target">
-                <option value="team-leader" data-translate-key="target_option_leader"></option>
-                <option value="client" data-translate-key="target_option_client"></option>
-                <option value="social-media-followers" data-translate-key="target_option_followers"></option>
-                <option value="customer" data-translate-key="target_option_customer"></option>
+                <option value="team-leader">Team Leader</option>
+                <option value="client">Client</option>
+                <option value="social-media-followers">Social Media Followers</option>
+                <option value="customer">Customer</option>
             </select>
         </div>
         <div class="form-group">
-            <label for="length" data-translate-key="length_label"></label>
+            <label for="length">Length</label>
             <select id="length">
-                <option value="short" data-translate-key="length_option_short"></option>
-                <option value="medium" data-translate-key="length_option_medium"></option>
-                <option value="long" data-translate-key="length_option_long"></option>
+                <option value="short">Short</option>
+                <option value="medium">Medium</option>
+                <option value="long">Long</option>
             </select>
         </div>
         <div class="form-group">
-            <label for="tone" data-translate-key="tone_label"></label>
+            <label for="tone">Tone</label>
             <select id="tone">
-                <option value="professional" data-translate-key="tone_option_professional"></option>
-                <option value="friendly" data-translate-key="tone_option_friendly"></option>
-                <option value="urgent" data-translate-key="tone_option_urgent"></option>
-                <option value="humorous" data-translate-key="tone_option_humorous"></option>
+                <option value="professional">Professional</option>
+                <option value="friendly">Friendly</option>
+                <option value="urgent">Urgent</option>
+                <option value="humorous">Humorous</option>
             </select>
         </div>
     </div>
 
     <div class="form-group">
-        <label for="detail" data-translate-key="detail_label"></label>
-        <textarea id="detail" rows="4" data-translate-key="detail_placeholder"></textarea>
+        <label for="detail">Additional Details</label>
+        <textarea id="detail" rows="4" placeholder="e.g., Please write a weekly report on the marketing campaign performance."></textarea>
     </div>
 
-    <button id="generateBtn" onclick="generateText()" data-translate-key="generate_button"></button>
+    <button id="generateBtn">Generate Text</button>
 
     <div id="result-wrapper" style="display: none; margin-top: 30px;">
         <div id="loader" style="display: none;">
             <div class="loader-inner"></div>
-            <p data-translate-key="loading_text"></p>
+            <p>AI is thinking...</p>
         </div>
         <div class="result-section">
-            <h2 data-translate-key="result_title"></h2>
+            <h2>Generated Text</h2>
             <div id="result-cards-container"></div>
         </div>
     </div>
     
     <div class="history-section">
-        <h2 data-translate-key="history_title"></h2>
+        <h2>History</h2>
         <ul id="history-list"></ul>
     </div>
 
 </div>
 
-<script src="i18n.js"></script>
-<script>
-    const generateBtn = document.getElementById('generateBtn');
-    const loader = document.getElementById('loader');
-    const resultWrapper = document.getElementById('result-wrapper');
-    const resultCardsContainer = document.getElementById('result-cards-container');
-    const historyList = document.getElementById('history-list');
-    const detailTextarea = document.getElementById('detail');
-
-    document.addEventListener('DOMContentLoaded', () => {
-        if (typeof loadHistory === 'function') loadHistory();
-        // Ensure the language switcher is created in the right place
-        const switcherContainer = document.getElementById('language-switcher-container');
-        if (switcherContainer && typeof createLanguageSwitcher === 'function') {
-            createLanguageSwitcher(switcherContainer);
-        }
-    });
-
-async function generateText() {
-    const situation = document.getElementById('situation').value;
-    const target = document.getElementById('target').value;
-    const length = document.getElementById('length').value;
-    const tone = document.getElementById('tone').value;
-    let detail = detailTextarea.value.trim();
-    const lang = window.currentLanguage || 'en';
-    const originalButtonText = generateBtn.textContent;
-
-    // Failsafe: If the detail field is empty, use the placeholder as a fallback.
-    if (!detail) {
-        detail = detailTextarea.placeholder;
-    }
-
-    // *** THE FINAL, CORRECTED PAYLOAD STRUCTURE ***
-    // The function is a standard HTTPS endpoint, not a "Callable".
-    // It expects the raw JSON payload directly, NOT wrapped in a "data" object.
-    const payload = {
-        situation, target, length, tone, detail, lang
-    };
-
-    const functionUrl = 'https://us-central1-project-1004-34292892-da8ed.cloudfunctions.net/generatePublic';
-
-    resultWrapper.style.display = 'block';
-    loader.style.display = 'block';
-    resultCardsContainer.innerHTML = '';
-    generateBtn.disabled = true;
-    generateBtn.textContent = (window.translations && window.translations.loading_text) || 'AI is thinking...';
-
-    try {
-        const response = await fetch(functionUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload) // SEND THE PAYLOAD DIRECTLY
-        });
-
-        // Gracefully handle both JSON and non-JSON error responses
-        const contentType = response.headers.get("content-type");
-        if (response.ok && contentType && contentType.indexOf("application/json") !== -1) {
-            const responseData = await response.json();
-            const resultText = responseData.text; // The server sends the result in the 'text' property
-            if (!resultText) {
-                throw new Error("The 'text' field was not found in the server response.");
-            }
-            const generatedTexts = resultText.split('\n').filter(v => v.trim() !== '');
-            renderResultCards(generatedTexts);
-            if (typeof saveToHistory === 'function') {
-                saveToHistory({ situation, target, length, tone, detail, result: generatedTexts });
-            }
-        } else {
-             // Handle plain text errors from the server
-            const errorText = await response.text();
-            throw new Error(errorText || `Server returned status: ${response.status}`);
-        }
-
-    } catch (error) {
-        console.error("API call error:", error);
-        // Sanitize and display the error message to avoid HTML injection
-        const errorElement = document.createElement('p');
-        errorElement.className = 'error-message';
-        errorElement.textContent = `Failed to generate text: ${error.message}`;
-        resultCardsContainer.innerHTML = '';
-        resultCardsContainer.appendChild(errorElement);
-    } finally {
-        loader.style.display = 'none';
-        generateBtn.disabled = false;
-        generateBtn.textContent = originalButtonText;
-    }
-}
-
-    function renderResultCards(texts) {
-        resultCardsContainer.innerHTML = (texts || []).map((text, index) => {
-            const encodedText = btoa(encodeURIComponent(text));
-            return `
-            <div class="result-card">
-                <div class="card-header">
-                    <h3>Suggestion ${index + 1}</h3>
-                    <button class="copy-btn" onclick="copyToClipboard(this, '${encodedText}')">Copy</button>
-                </div>
-                <p class="card-text">${text.replace(/\n/g, '<br>')}</p>
-            </div>
-        `}).join('');
-    }
-
-    function copyToClipboard(button, encodedText) {
-        try {
-            const textToCopy = decodeURIComponent(atob(encodedText));
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                button.textContent = 'Copied!';
-                setTimeout(() => { button.textContent = 'Copy'; }, 2000);
-            }, (err) => {
-                console.error('Copy failed', err);
-                alert('Failed to copy text.');
-            });
-        } catch (e) {
-            console.error("Decoding error:", e);
-            alert("Could not copy text due to a decoding error.");
-        }
-    }
-
-    function saveToHistory(entry) {
-        try {
-            let history = JSON.parse(localStorage.getItem('generationHistory')) || [];
-            history.unshift(entry);
-            if (history.length > 5) history = history.slice(0, 5);
-            localStorage.setItem('generationHistory', JSON.stringify(history));
-            loadHistory();
-        } catch(e) {
-            console.error("Could not save to history:", e);
-        }
-    }
-
-    function loadHistory() {
-        try {
-            const history = JSON.parse(localStorage.getItem('generationHistory')) || [];
-            historyList.innerHTML = history.map(item => {
-                const resultSummary = item && item.result && item.result[0] ? item.result[0].substring(0, 30) : '...';
-                const itemString = JSON.stringify(item).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
-                return `
-                    <li class="history-item" onclick="loadFromHistory('${itemString}')">
-                        <strong>[${item.situation || 'N/A'}]</strong> to ${item.target || 'N/A'} - "${resultSummary}..."
-                    </li>
-                `;
-            }).join('');
-        } catch (e) {
-            console.error("Could not load history:", e);
-            historyList.innerHTML = "<li class='error-message'>Could not load history.</li>";
-        }
-    }
-
-    function loadFromHistory(itemString) {
-        try {
-            const item = JSON.parse(itemString.replace(/&apos;/g, "'").replace(/&quot;/g, '"'));
-            document.getElementById('situation').value = item.situation;
-            document.getElementById('target').value = item.target;
-            document.getElementById('length').value = item.length;
-            document.getElementById('tone').value = item.tone;
-            detailTextarea.value = item.detail;
-            renderResultCards(item.result);
-            resultWrapper.style.display = 'block';
-            window.scrollTo(0, 0);
-        } catch (e) {
-            console.error("Could not load from history item:", e);
-            alert("Error loading this history item.");
-        }
-    }
-</script>
+<script src="main.js?v=2.0.1"></script>
 
 </body>
 </html>
