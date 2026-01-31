@@ -11,8 +11,8 @@
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI Text Generator | AI Utility Platform</title>
-    <meta id="meta-description" name="description" content="The AI Text Generator suggests 3 versions of text for various situations, audiences, lengths, and tones." />
+    <title data-i18n="title">AI Text Generator | AI Utility Platform</title>
+    <meta id="meta-description" name="description" content="The AI Text Generator suggests 3 versions of text for various situations, audiences, lengths, and tones." data-i18n="meta_description" />
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -20,87 +20,90 @@
 <nav class="nav-bar">
     <div class="menu">
         <ul class="nav-links">
-            <li><a href="/" class="active">AI Writer</a></li>
-            <li><a href="/decision-helper.html">Decision Helper</a></li>
-            <li><a href="/calculator.html">Calculator</a></li>
+            <li><a href="/" class="active" data-i18n="nav_ai_writer">AI Writer</a></li>
+            <li><a href="/decision-helper.html" data-i18n="nav_decision_helper">Decision Helper</a></li>
+            <li><a href="/calculator.html" data-i18n="nav_calculator">Calculator</a></li>
         </ul>
-        <div id="language-switcher-container"></div>
+        <div class="language-buttons">
+            <button id="lang-ko">한국어</button>
+            <button id="lang-en">English</button>
+        </div>
     </div>
 </nav>
 
 <div class="container">
     <div class="header">
         <h1>
-            <span>AI Text Generator</span>
+            <span data-i18n="header_title">AI Text Generator</span>
             <span class="version-badge">v2.1</span>
         </h1>
-        <p class="subtitle">This tool helps you write text for various situations. It suggests 3 versions of text for different audiences, lengths, and tones.</p>
+        <p class="subtitle" data-i18n="header_subtitle">This tool helps you write text for various situations. It suggests 3 versions of text for different audiences, lengths, and tones.</p>
     </div>
 
     <div class="form-grid">
         <div class="form-group">
-            <label for="situation">Situation</label>
+            <label for="situation" data-i18n="label_situation">Situation</label>
             <select id="situation">
-                <option value="business-report">Business Report</option>
-                <option value="email-apology">Email Apology</option>
-                <option value="sns-promotion">SNS Promotion</option>
-                <option value="review-request">Review Request</option>
+                <option value="business-report" data-i18n="option_business-report">Business Report</option>
+                <option value="email-apology" data-i18n="option_email-apology">Email Apology</option>
+                <option value="sns-promotion" data-i18n="option_sns-promotion">SNS Promotion</option>
+                <option value="review-request" data-i18n="option_review-request">Review Request</option>
             </select>
         </div>
         <div class="form-group">
-            <label for="target">Target Audience</label>
+            <label for="target" data-i18n="label_target">Target Audience</label>
             <select id="target">
-                <option value="team-leader">Team Leader</option>
-                <option value="client">Client</option>
-                <option value="social-media-followers">Social Media Followers</option>
-                <option value="customer">Customer</option>
+                <option value="team-leader" data-i18n="option_team-leader">Team Leader</option>
+                <option value="client" data-i18n="option_client">Client</option>
+                <option value="social-media-followers" data-i18n="option_social-media-followers">Social Media Followers</option>
+                <option value="customer" data-i18n="option_customer">Customer</option>
             </select>
         </div>
         <div class="form-group">
-            <label for="length">Length</label>
+            <label for="length" data-i18n="label_length">Length</label>
             <select id="length">
-                <option value="short">Short</option>
-                <option value="medium">Medium</option>
-                <option value="long">Long</option>
+                <option value="short" data-i18n="option_short">Short</option>
+                <option value="medium" data-i18n="option_medium">Medium</option>
+                <option value="long" data-i18n="option_long">Long</option>
             </select>
         </div>
         <div class="form-group">
-            <label for="tone">Tone</label>
+            <label for="tone" data-i18n="label_tone">Tone</label>
             <select id="tone">
-                <option value="professional">Professional</option>
-                <option value="friendly">Friendly</option>
-                <option value="urgent">Urgent</option>
-                <option value="humorous">Humorous</option>
+                <option value="professional" data-i18n="option_professional">Professional</option>
+                <option value="friendly" data-i18n="option_friendly">Friendly</option>
+                <option value="urgent" data-i18n="option_urgent">Urgent</option>
+                <option value="humorous" data-i18n="option_humorous">Humorous</option>
             </select>
         </div>
     </div>
 
     <div class="form-group">
-        <label for="detail">Additional Details</label>
-        <textarea id="detail" rows="4" placeholder="e.g., Please write a weekly report on the marketing campaign performance."></textarea>
+        <label for="detail" data-i18n="label_detail">Additional Details</label>
+        <textarea id="detail" rows="4" placeholder="e.g., Please write a weekly report on the marketing campaign performance." data-i18n-placeholder="placeholder_detail"></textarea>
     </div>
 
-    <button id="generateBtn">Generate Text</button>
+    <button id="generateBtn" data-i18n="button_generate">Generate Text</button>
 
     <div id="result-wrapper" style="display: none; margin-top: 30px;">
         <div id="loader" style="display: none;">
             <div class="loader-inner"></div>
-            <p>AI is thinking...</p>
+            <p data-i18n="loader_text">AI is thinking...</p>
         </div>
         <div class="result-section">
-            <h2>Generated Text</h2>
+            <h2 data-i18n="result_header">Generated Text</h2>
             <div id="result-cards-container"></div>
         </div>
     </div>
     
     <div class="history-section">
-        <h2>History</h2>
+        <h2 data-i18n="history_header">History</h2>
         <ul id="history-list"></ul>
     </div>
 
 </div>
 
-<script src="main.js?v=2.0.2"></script>
+<script src="main.js?v=2.1.0"></script>
 
 </body>
 </html>

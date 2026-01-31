@@ -5,6 +5,53 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultContainer = document.getElementById('result-cards-container');
     const historyList = document.getElementById('history-list');
 
+    // --- 다국어 지원 기능 시작 ---
+    const translations = {};
+
+    async function loadTranslations(lang) {
+        try {
+            const response = await fetch(`${lang}.json`);
+            if (!response.ok) {
+                throw new Error(`Failed to load ${lang}.json`);
+            }
+            translations[lang] = await response.json();
+            updateUI(lang);
+            localStorage.setItem('preferredLanguage', lang); // 사용자가 선택한 언어 저장
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    function updateUI(lang) {
+        const langData = translations[lang];
+        if (!langData) return;
+
+        document.querySelectorAll('[data-i18n]').forEach(element => {
+            const key = element.getAttribute('data-i18n');
+            if (langData[key]) {
+                element.textContent = langData[key];
+            }
+        });
+
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+            const key = element.getAttribute('data-i18n-placeholder');
+            if (langData[key]) {
+                element.placeholder = langData[key];
+            }
+        });
+    }
+
+    document.getElementById('lang-ko').addEventListener('click', () => loadTranslations('ko'));
+    document.getElementById('lang-en').addEventListener('click', () => loadTranslations('en'));
+
+    // 페이지 로드 시 기본 언어 설정
+    const savedLang = localStorage.getItem('preferredLanguage');
+    const browserLang = navigator.language.startsWith('ko') ? 'ko' : 'en';
+    const initialLang = savedLang || browserLang;
+    loadTranslations(initialLang);
+    // --- 다국어 지원 기능 끝 ---
+
+
     if (generateBtn) {
         generateBtn.addEventListener('click', async () => {
             const situation = document.getElementById('situation').value;
@@ -36,7 +83,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 if (data.generatedText && typeof data.generatedText === 'string') {
-                    // Split the text by "Version X:" to create cards
                     const versions = data.generatedText.split(/Version [0-9]+:/).map(v => v.trim()).filter(v => v);
 
                     if (versions.length > 0) {
@@ -50,7 +96,6 @@ document.addEventListener('DOMContentLoaded', () => {
                             resultContainer.appendChild(card);
                         });
                     } else {
-                        // If splitting fails, show the whole text in one card
                         const card = document.createElement('div');
                         card.className = 'result-card';
                         card.innerHTML = `<h3>Generated Text</h3><p>${data.generatedText.replace(/\n/g, '<br>')}</p>`;
